@@ -1,0 +1,82 @@
+/* Этот файл содержит стили "общего назначения" и используется на всех страницах. */
+
+html {
+    --gap-big: 20px;
+    --gap-medium: 12px;
+    --gap-small: 6px;
+    --gap-tiny: 2px;
+
+    --bg-main: #ffe4cf;
+    --bg-image-mask: #4446;
+    --bg-card: #fffc;
+    --bg-aside: #091424cc;
+
+    --bg-taskcat: #0005;
+    --bg-taskcat-hover: #0008;
+    --bg-task: #fff6;
+    --bg-task-hover: #fffa;
+
+    --text-white: #fff;
+    --text-white-pale: #fff8;
+    --text-black: #000;
+    --text-black-pale: #0008;
+    --text-main: var(--text-black);
+
+    --gray: #404040;
+
+    --shadow-regular: 0 0 10px #0003;
+    --shadow-emphasis-big: 0 4px 20px #0004;
+    --shadow-emphasis-low: 0 2px 16px #0002;
+    --shadow-inner-glass: inset 0 0 1px 1px var(--bg-task);
+
+    --rounding-regular: 8px;
+    --rounding-full: 1000px;
+    --blur-backdrop-bg: 5px;
+}
+@media (prefers-color-scheme: dark) {
+    html {
+        --bg-main: #201711;
+        --bg-aside: #091424cc;
+        --text-main: var(--text-white);
+    }
+}
+
+body {
+    margin: 0; padding: 0;
+    font-size: 14px; font-family: sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+
+
+.flex-fullcol {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-big);
+}
+
+.flex-fullrow {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap-big);
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center; align-items: center;
+}
+
+@media screen and (max-width: 720px) {
+    .hidden-mediaSmall {
+        display: none !important;
+    }
+}
+
+@media screen and (min-width: 721px) {
+    .hidden-mediaBig {
+        display: none !important;
+    }
+}
