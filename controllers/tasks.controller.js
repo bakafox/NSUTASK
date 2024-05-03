@@ -6,6 +6,7 @@ const DB = require('../databases');
 
 
 
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
 router.getBoardTasks = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
@@ -54,8 +55,11 @@ router.getTaskInfo = (req, res) => {
     );
 };
 
+
+
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
 router.createTask = (req, res) => {
-    const boardId = req.params.board_id;
+    const userId = req.user.id, boardId = req.params.board_id;
     const { title, body, dateDue, priority } = req.body;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
 
@@ -71,15 +75,11 @@ router.createTask = (req, res) => {
     }
 
     boardsDb.get(
-        `SELECT user_creator FROM boards WHERE id = ?`,
-        [boardId],
+        `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
+        [boardId, userId],
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
-
-            if (row.user_creator !== req.user.id) {
-                return res.status(403).json({ message: 'Добавлять задачи может только создатель доски.' });
-            }
 
             dataDb.run(
                 `INSERT INTO tasks (title, body, date_created, date_due, priority) VALUES (?, ?, ?, ?, ?)`,
@@ -96,7 +96,7 @@ router.createTask = (req, res) => {
 };
 
 router.editTaskInfo = (req, res) => {
-    const boardId = req.params.board_id, taskId = req.params.task_id;
+    const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id;
     const { title, body, dateDue, priority } = req.body;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
 
@@ -112,15 +112,11 @@ router.editTaskInfo = (req, res) => {
     }
 
     boardsDb.get(
-        `SELECT user_creator FROM boards WHERE id = ?`,
-        [boardId],
+        `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
+        [boardId, userId],
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
-
-            if (row.user_creator !== req.user.id) {
-                return res.status(403).json({ message: 'Изменять задачи может только создатель доски.' });
-            }
 
             dataDb.run(
                 `UPDATE tasks SET title = ?, body = ?, date_due = ?, priority = ? WHERE id = ?`,
@@ -137,19 +133,15 @@ router.editTaskInfo = (req, res) => {
 };
 
 router.deleteTask = (req, res) => {
-    const boardId = req.params.board_id, taskId = req.params.task_id;
+    const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
 
     boardsDb.get(
-        `SELECT user_creator FROM boards WHERE id = ?`,
-        [boardId],
+        `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
+        [boardId, userId],
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
-
-            if (row.user_creator !== req.user.id) {
-                return res.status(403).json({ message: 'Удалять задачи может только создатель доски.' });
-            }
 
             dataDb.run(
                 `DELETE FROM tasks WHERE id = ?`,
