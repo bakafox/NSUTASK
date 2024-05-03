@@ -22,6 +22,7 @@ function getUsers() {
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
+            display_name TEXT NOT NULL, 
             password TEXT NOT NULL,
             role TEXT NOT NULL DEFAULT 'user'
         )`);
@@ -50,7 +51,7 @@ function getBoards() {
             CREATE TABLE IF NOT EXISTS board_configs (
                 board_id INTEGER PRIMARY KEY NOT NULL,
                 submits_autoaccept INTEGER DEFAULT 0,
-                submits_body_required TEXT DEFAULT 'none',
+                submits_body_min TEXT DEFAULT 0,
                 submits_strict_due_date INTEGER DEFAULT 0
             )
         `);
@@ -94,7 +95,8 @@ function getBoardData(board_id) {
                 task_id INTEGER NOT NULL,
                 user_id INTEGER UNIQUE NOT NULL,
                 date_submitted TEXT NOT NULL,
-                status TEXT DEFAULT 'pending'
+                text TEXT,
+                status TEXT NOT NULL
             )
         `);
     });

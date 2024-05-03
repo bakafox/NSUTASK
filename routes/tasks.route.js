@@ -6,12 +6,12 @@ const authDV = require('../authDV');
 
 
 
-router.get('/board:board_id/tasks', authDV.validate_user, tasksController.getBoardTasks);
-router.get('/board:board_id/task:task_id', authDV.validate_user, tasksController.getTaskInfo);
+router.get('/board:board_id/tasks', authDV.validateUser, tasksController.getBoardTasks);
+router.get('/board:board_id/task:task_id', authDV.validateUser, tasksController.getTaskInfo);
 
-router.post('/board:board_id/tasks', authDV.validate_operator, tasksController.createTask);
-router.put('/board:board_id/task:task_id', authDV.validate_operator, tasksController.editTaskInfo);
-router.delete('/board:board_id/task:task_id', authDV.validate_operator, tasksController.deleteTask);
+router.post('/board:board_id/tasks', authDV.validateOperator, tasksController.createTask);
+router.put('/board:board_id/task:task_id', authDV.validateOperator, tasksController.editTaskInfo);
+router.delete('/board:board_id/task:task_id', authDV.validateOperator, tasksController.deleteTask);
 
 
 

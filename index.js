@@ -10,19 +10,22 @@ app.use(express.static('public')); // Middleware для статичных ве�
 
 
 
-const authRoute = require('./routes/auth.route');
-app.use('/api/auth', authRoute); // api/auth
+const usersRoute = require('./routes/users.route');
+app.use('/api/', usersRoute); // api/users ИЛИ api/userABC
 
 const boardsRoute = require('./routes/boards.route');
-app.use('/api/', boardsRoute); // api/boardABC
+app.use('/api/', boardsRoute); // api/boards ИЛИ api/boardABC
 
 const tasksRoute = require('./routes/tasks.route');
-app.use('/api/', tasksRoute); // api/boardABC/taskXYZ
+app.use('/api/', tasksRoute); // api/boardABC/tasks ИЛИ api/boardABC/taskIJK
+
+const submitRoute = require('./routes/submits.route');
+app.use('/api/', submitRoute); // api/boardABC/taskIJK/submit ИЛИ api/boardABC/taskIJK/submitXYZ
 
 
 
 app.use('/', express.static(path.join(__dirname, 'public/tasklist')));
-app.use(['/login', '/register', '/auth'], express.static(path.join(__dirname, 'public/auth')));
+app.use(['/login', '/register', '/auth'], express.static(path.join(__dirname, 'public/users')));
 app.use('/shared', express.static(path.join(__dirname, 'public/shared')));
 //app.use('/auth', express.static(path.join(__dirname, 'public/if-auth')));
 //app.use('/config', express.static(path.join(__dirname, 'public/if-config')));
