@@ -9,12 +9,12 @@
 
     <link rel="stylesheet" href="/shared/common.css">
     <link rel="stylesheet" href="test.css">
-
-    <script src="api/boards.js" defer></script>
-    <script src="api/submits.js" defer></script>
-    <script src="api/tasks.js" defer></script>
-    <script src="api/users.js" defer></script>
-
+    
+    <script src="/shared/api/users.js" defer></script>
+    <script src="/shared/api/boards.js" defer></script>
+    <script src="/shared/api/tasks.js" defer></script>
+    <script src="/shared/api/submits.js" defer></script>
+    
     <script src="auth.js"></script>
     <script src="wrap.js"></script>
 </head>
@@ -24,8 +24,8 @@
     <h1 class="flex-center">NSUTASK API Sandbox v2</h1>
     <div>
         <input type="text" id="get-token" placeholder="session_token">
-        <button onclick="addToken()">Вставить в куки</button>
-        <button onclick="clearToken()">Очистить из кук</button>
+        <button onclick="wrap_addToken()">Вставить в куки</button>
+        <button onclick="wrap_clearToken()">Очистить из кук</button>
         <span style="float: right;">
             <b>U:</b> — пользователь, <b>O:</b> — оператор
             <br>
@@ -38,52 +38,52 @@
     <section class="card flex-fullcol flex-center">
         <h2>Boards</h2>
         <div>
-            <button onclick="getUserBoards()">U: getUserBoards</button>
-            <button onclick="getBoardInfo()">U: getBoardInfo</button>
+            <button onclick="wrap_getUserBoards()">U: getUserBoards</button>
+            <button onclick="wrap_getBoardInfo()">U: getBoardInfo</button>
             <br>
-            <button onclick="createBoard()">O: createBoard</button>
-            <button onclick="editBoardInfo()">O: editBoardInfo</button>
-            <button onclick="deleteBoard()">O: deleteBoard</button>
+            <button onclick="wrap_createBoard()">O: createBoard</button>
+            <button onclick="wrap_editBoardInfo()">O: editBoardInfo</button>
+            <button onclick="wrap_deleteBoard()">O: deleteBoard</button>
             <br>
-            <button onclick="getMembers()">U: getMembers</button>
-            <button onclick="addMember()">O: addMember</button>
-            <button onclick="deleteMember()">O: deleteMember</button>
+            <button onclick="wrap_getMembers()">U: getMembers</button>
+            <button onclick="wrap_addMember()">O: addMember</button>
+            <button onclick="wrap_deleteMember()">O: deleteMember</button>
         </div>
     </section>
     
     <section class="card flex-fullcol flex-center">
         <h2>Submits</h2>
         <div>
-            <button onclick="getSubmitInfo()">U: getSubmitInfo</button>
-            <button onclick="createSubmit()">U: createSubmit</button>
-            <button onclick="deleteSubmit()">U: deleteSubmit</button>
+            <button onclick="wrap_getSubmitInfo()">U: getSubmitInfo</button>
+            <button onclick="wrap_createSubmit()">U: createSubmit</button>
+            <button onclick="wrap_deleteSubmit()">U: deleteSubmit</button>
             <br>
-            <button onclick="getTaskSubmits()">O: getTaskSubmits</button>
-            <button onclick="setSubmitStatus()">O: setSubmitStatus</button>
+            <button onclick="wrap_getTaskSubmits()">O: getTaskSubmits</button>
+            <button onclick="wrap_setSubmitStatus()">O: setSubmitStatus</button>
         </div>
     </section>
     
     <section class="card flex-fullcol flex-center">
         <h2>Tasks</h2>
         <div>
-            <button onclick="getBoardTasks()">U: getBoardTasks</button>
-            <button onclick="getTaskInfo()">U: getTaskInfo</button>
+            <button onclick="wrap_getBoardTasks()">U: getBoardTasks</button>
+            <button onclick="wrap_getTaskInfo()">U: getTaskInfo</button>
             <br>
-            <button onclick="createTask()">O: createTask</button>
-            <button onclick="editTaskInfo()">O: editTaskInfo</button>
-            <button onclick="deleteTask()">O: deleteTask</button>
+            <button onclick="wrap_createTask()">O: createTask</button>
+            <button onclick="wrap_editTaskInfo()">O: editTaskInfo</button>
+            <button onclick="wrap_deleteTask()">O: deleteTask</button>
         </div>
     </section>
         
     <section class="card flex-fullcol flex-center">
         <h2>Users</h2>
         <div>
-            <button onclick="login()">login</button>
-            <button onclick="register()">register</button>
+            <button onclick="wrap_login()">login</button>
+            <button onclick="wrap_register()">register</button>
             <br>
-            <button onclick="getUsers()">O: getUsers</button>
-            <button onclick="getUser()">O: getUser</button>
-            <button onclick="findUsers()">O: findUsers</button>
+            <button onclick="wrap_getUsers()">O: getUsers</button>
+            <button onclick="wrap_getUser()">O: getUser</button>
+            <button onclick="wrap_findUsers()">O: findUsers</button>
         </div>
     </section>
 </main>

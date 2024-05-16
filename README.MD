@@ -1,29 +1,64 @@
-# NSUTASK
-<!--
-[сюда вхуярить логотип или чё там ещё для БрЭнДеНгА в репах юзают]
+![Логотип NSUTASK](logotyp.jpg)
 
-**NSUTASK** — это пизьдец блять, я спать хочу не могу просто, ща ёбнусь прям здесь головой об стол и всьо нахуй
--->
+**NSUTASK** — это простая в настройке и использовании self-hosted веб канбан-доска для организации учебного процесса, где преподаватели в формате карточек до некторого срока могут создавать задачи, а ученики — легко отправлять свои решения на проверку.
+
+
 
 ## Установка и запуск
 
-0. NSUTASK написан на **Node.JS**, поэтому перед запуском нужно сперва его установить (справедливо).
+0. NSUTASK написан на **Node.JS**, поэтому перед запуском н ужно сперва его установить (справедливо):
+```
+sudo apt install nodejs npm -y
+```
 1. Клонируйте репозиторий и перейдите в него:
 ```
 git clone git@github.com:NSUTASK/NSUTASK.git
 ```
-2. Установите зависимости, также желательно (но не обязательно) поставить nodemon для упрощения отладки:
+2. Установите зависимости, также желательно поставить Nodemon для упрощения отладки:
 ```
 npm i
 npm i nodemon
 ```
 3. Наконец, запустите и перейдите на `localhost:<ПОРТ>` для начала работы:
 ```
-npm run test
-ИЛИ
-npm run serve
+npm run test # <-- запуск под Nodemon
+# ИЛИ
+npm run serve # <-- запуск под Node
 ```
+4. Для удобной отладки API можно использовать [**Insomnia**](https://insomnia.rest/download).
+Файл с конфигурациями лежит в корне этого репозитория (`Insomnia_<ДАТА>.json`), для импорта нужно выбрать *Use the local Scratch Pad*, затем тыкнуть по *Scratch Pad* слева сверху и выбрать *Import*.
+
+
 
 ## Документация АРІ
 
-*Work In Progress!*
+### Users
+- **`login`** — 
+- **`register`** — 
+- **`getUsers`** — 
+- **`getUser`** — 
+- **`findUsers`** — 
+
+### Boards
+- **`getUserBoards`** — 
+- **`getBoardInfo`** — 
+- **`createBoard`** — 
+- **`editBoardInfo`** — 
+- **`deleteBoard`** — 
+- **`getMembers`** — 
+- **`addMember`** — 
+- **`deleteMember`** — 
+
+### Tasks
+- **`getBoardTasks`** — 
+- **`getTaskInfo`** — 
+- **`createTask`** — 
+- **`editTaskInfo`** — 
+- **`deleteTask`** — 
+
+### Submits
+- **`getSubmitInfo`** — 
+- **`createSubmit`** — 
+- **`deleteSubmit`** — 
+- **`getTaskSubmits`** — 
+- **`setSubmitStatus`** — 

@@ -32,7 +32,7 @@ app.use('/test', express.static(path.join(__dirname, 'public/test')));
 
 
 // Дополнительные команды для дебага добавляьт ВНУТРЬ функции!
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6789;
 app.listen(PORT, () => {
     console.log(`Проект запущен на порту ${PORT}...`);
 });

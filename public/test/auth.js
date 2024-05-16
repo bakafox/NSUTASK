@@ -23,18 +23,12 @@ function eraseCookie(name) {
 function addToken() {
     const tokenInput = document.getElementById('get-token');
     const token = tokenInput.value.trim();
-    if (token) {
     setCookie('session_token', token, 1);
     tokenInput.value = '';
-    alert('Token added to cookie successfully!');
-    } else {
-    alert('Please enter a valid token.');
-    }
 }
 
 function clearToken() {
     eraseCookie('session_token');
-    alert('Token cleared from cookie successfully!');
 }
 
 function getToken() {
