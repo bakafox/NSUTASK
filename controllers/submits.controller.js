@@ -46,7 +46,7 @@ router.createSubmit = (req, res) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
-            const boardConfigs = () => boardsDb.get(
+            const boardConfigs = boardsDb.get(
                 `SELECT * FROM board_configs WHERE board_id = ?`,
                 [boardId],
                 (err, row) => {

@@ -106,7 +106,7 @@ router.createBoard = (req, res) => {
 };
 
 router.editBoardInfo = (req, res) => {
-    const boardId = req.params.board_id;
+    const userId = req.user.id, boardId = req.params.board_id;
     const { name, description } = req.body;
     const db = DB.getBoards();
 
@@ -155,6 +155,17 @@ router.deleteBoard = (req, res) => {
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
+
+            // проверяем, является ли пользователем создателем доски
+            db.get(
+                `SELECT * FROM boards WHERE id = ? AND user_creator = ?`,
+                [boardId, userId],
+                (err, row) => {
+                    if (err) { return res.status(500).json({ message: err.message }); }
+
+                    if (!row) { return res.status(403).json({ message: 'Удалить доску может только её создатель.' }); }
+                }
+            )
 
             db.run(
                 `DELETE FROM boards WHERE id = ? AND user_creator = ?`,

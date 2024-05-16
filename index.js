@@ -27,8 +27,7 @@ app.use('/api/', submitRoute); // api/boardABC/taskIJK/submit ИЛИ api/boardAB
 app.use('/', express.static(path.join(__dirname, 'public/tasklist')));
 app.use(['/login', '/register', '/auth'], express.static(path.join(__dirname, 'public/users')));
 app.use('/shared', express.static(path.join(__dirname, 'public/shared')));
-//app.use('/auth', express.static(path.join(__dirname, 'public/if-auth')));
-//app.use('/config', express.static(path.join(__dirname, 'public/if-config')));
+app.use('/test', express.static(path.join(__dirname, 'public/test')));
 
 
 

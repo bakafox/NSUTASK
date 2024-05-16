@@ -43,9 +43,21 @@ html {
 
 body {
     margin: 0; padding: 0;
+    box-sizing: border-box;
     font-size: 14px; font-family: sans-serif;
     background: var(--bg-main);
     color: var(--text-main);
+}
+
+button,
+input:not([type="checkbox"], input[type="radio"]),
+textarea {
+    min-height: 32px;
+}
+
+h1 {
+    font-family: serif;
+    font-weight: bold;
 }
 
 
@@ -78,5 +90,28 @@ body {
 @media screen and (min-width: 721px) {
     .hidden-mediaBig {
         display: none !important;
+    }
+}
+
+
+
+.card {
+    display: flex; justify-content: start;
+    background: var(--bg-card);
+    margin: var(--gap-small); padding: var(--gap-small);
+    border-radius: var(--rounding-regular);
+    box-shadow: var(--shadow-emphasis-low);
+}
+
+.card-adaptive {
+    margin: auto; padding: var(--gap-big);
+    max-width: 480px;
+}
+@media screen and (min-width: 721px) {
+    .card-adaptive {
+        background: var(--bg-card);
+        margin: var(--gap-big) auto;
+        border-radius: var(--rounding-regular);
+        box-shadow: var(--shadow-emphasis-low);
     }
 }

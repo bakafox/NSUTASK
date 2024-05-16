@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>NSUTASK</title>
+
+    <link rel="stylesheet" href="/shared/common.css">
+    <link rel="stylesheet" href="test.css">
+
+    <script src="api/boards.js" defer></script>
+    <script src="api/submits.js" defer></script>
+    <script src="api/tasks.js" defer></script>
+    <script src="api/users.js" defer></script>
+
+    <script src="auth.js"></script>
+    <script src="wrap.js"></script>
+</head>
+<body>
+
+<div class="flex-fullcol" style="margin: 0 var(--gap-medium) var(--gap-small);">
+    <h1 class="flex-center">NSUTASK API Sandbox v2</h1>
+    <div>
+        <input type="text" id="get-token" placeholder="session_token">
+        <button onclick="addToken()">Вставить в куки</button>
+        <button onclick="clearToken()">Очистить из кук</button>
+        <span style="float: right;">
+            <b>U:</b> — пользователь, <b>O:</b> — оператор
+            <br>
+            См. документацию в соответствующем разделе файла <b>README.MD</b>.
+        </span>
+    </div>
+</div>
+
+<main>
+    <section class="card flex-fullcol flex-center">
+        <h2>Boards</h2>
+        <div>
+            <button onclick="getUserBoards()">U: getUserBoards</button>
+            <button onclick="getBoardInfo()">U: getBoardInfo</button>
+            <br>
+            <button onclick="createBoard()">O: createBoard</button>
+            <button onclick="editBoardInfo()">O: editBoardInfo</button>
+            <button onclick="deleteBoard()">O: deleteBoard</button>
+            <br>
+            <button onclick="getMembers()">U: getMembers</button>
+            <button onclick="addMember()">O: addMember</button>
+            <button onclick="deleteMember()">O: deleteMember</button>
+        </div>
+    </section>
+    
+    <section class="card flex-fullcol flex-center">
+        <h2>Submits</h2>
+        <div>
+            <button onclick="getSubmitInfo()">U: getSubmitInfo</button>
+            <button onclick="createSubmit()">U: createSubmit</button>
+            <button onclick="deleteSubmit()">U: deleteSubmit</button>
+            <br>
+            <button onclick="getTaskSubmits()">O: getTaskSubmits</button>
+            <button onclick="setSubmitStatus()">O: setSubmitStatus</button>
+        </div>
+    </section>
+    
+    <section class="card flex-fullcol flex-center">
+        <h2>Tasks</h2>
+        <div>
+            <button onclick="getBoardTasks()">U: getBoardTasks</button>
+            <button onclick="getTaskInfo()">U: getTaskInfo</button>
+            <br>
+            <button onclick="createTask()">O: createTask</button>
+            <button onclick="editTaskInfo()">O: editTaskInfo</button>
+            <button onclick="deleteTask()">O: deleteTask</button>
+        </div>
+    </section>
+        
+    <section class="card flex-fullcol flex-center">
+        <h2>Users</h2>
+        <div>
+            <button onclick="login()">login</button>
+            <button onclick="register()">register</button>
+            <br>
+            <button onclick="getUsers()">O: getUsers</button>
+            <button onclick="getUser()">O: getUser</button>
+            <button onclick="findUsers()">O: findUsers</button>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
