@@ -13,7 +13,7 @@ router.post('/boards', authDV.validateOperator, boardsController.createBoard);
 router.put('/board:board_id', authDV.validateOperator, boardsController.editBoardInfo);
 router.delete('/board:board_id', authDV.validateOperator, boardsController.deleteBoard);
 
-router.get('/board:board_id/users', authDV.validateUser, boardsController.getMembers);
+router.get('/board:board_id/users', authDV.validateOperator, boardsController.getMembers);
 router.post('/board:board_id/user:user_id', authDV.validateOperator, boardsController.addMember);
 router.delete('/board:board_id/user:user_id', authDV.validateOperator, boardsController.deleteMember);
 

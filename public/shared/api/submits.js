@@ -1,5 +1,5 @@
 function getSubmitInfo(token, boardId, taskId) {
-    fetch(`/board/${boardId}/task/${taskId}/submit`, {
+    fetch(`../api/board${boardId}/task${taskId}/submit`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -10,7 +10,7 @@ function getSubmitInfo(token, boardId, taskId) {
 }
 
 function createSubmit(token, boardId, taskId, body) {
-    fetch(`/board/${boardId}/task/${taskId}/submit`, {
+    fetch(`../api/board${boardId}/task${taskId}/submit`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ function createSubmit(token, boardId, taskId, body) {
 }
 
 function deleteSubmit(token, boardId, taskId) {
-    fetch(`../api/board/${boardId}/task/${taskId}/submit`, {
+    fetch(`../api/board${boardId}/task${taskId}/submit`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -36,7 +36,7 @@ function deleteSubmit(token, boardId, taskId) {
 }
 
 function getTaskSubmits(token, boardId, taskId) {
-    fetch(`../api/board/${boardId}/task/${taskId}/submits`, {
+    fetch(`../api/board${boardId}/task${taskId}/submits`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -47,7 +47,7 @@ function getTaskSubmits(token, boardId, taskId) {
 }
 
 function setSubmitStatus(token, boardId, taskId, submitId, status) {
-    fetch(`../api/board/${boardId}/task/${taskId}/submit/${submitId}`, {
+    fetch(`../api/board${boardId}/task${taskId}/submit${submitId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

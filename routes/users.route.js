@@ -9,9 +9,10 @@ const authDV = require('../authDV');
 router.post('/users/login', usersController.login);
 router.post('/users/register', usersController.register);
 
-router.get('/users', authDV.validateOperator, usersController.getUsers);
-router.get('/user:user_id', authDV.validateOperator, usersController.getUser);
-router.get('/findUsers', authDV.validateOperator, usersController.findUsers);
+router.get('/users', authDV.validateUser, usersController.getUsers);
+router.get('/user:user_id', authDV.validateUser, usersController.getUser);
+router.get('/users/find', authDV.validateUser, usersController.findUsers);
+router.get('/users/role', authDV.validateUser, usersController.getRole);
 
 
 

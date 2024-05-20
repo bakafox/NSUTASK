@@ -38,7 +38,7 @@ function getUsers(token) {
 }
 
 function getUser(token, userId) {
-    fetch(`../api/user/${userId}`, {
+    fetch(`../api/user${userId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -49,7 +49,18 @@ function getUser(token, userId) {
 }
 
 function findUsers(token, query) {
-    fetch(`../api/findUsers?q=${query}`, {
+    fetch(`../api/users/find?q=${query}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+}
+
+function getRole(token) {
+    fetch(`../api/users/role`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }

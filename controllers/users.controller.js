@@ -39,7 +39,9 @@ router.login = (req, res) => {
 
 router.register = (req, res) => {
     const { username, display_name, password, role } = req.body;
-    if (!authDV.ALLOW_CREATING_OPERATORS) { role = 'user'; }
+    if (!authDV.ALLOW_CREATING_OPERATORS && role !== 'user') {
+        return res.status(403).json({ message: 'Текущие настройки NSUTASK запрещают создание новых операторов.' });
+    }
     const db = DB.getUsers();
 
     bcrypt.hash(password, 10, (err, hash) => {
@@ -71,7 +73,7 @@ router.getUsers = (req, res) => {
         (err, rows) => {
             if (err) { return res.status(500).json({ message: err.message }); }
 
-            return res.status(200).json(rows);
+            return res.status(200).json(rows.map(row => row.id));
         }
     );
 };
@@ -91,7 +93,6 @@ router.getUser = (req, res) => {
     );
 };
 
-
 router.findUsers = (req, res) => {
     const q = req.query.q; // Единственный (пока) эндпоинт, использующий query вместо params! :3
     const db = DB.getUsers();
@@ -101,13 +102,27 @@ router.findUsers = (req, res) => {
     }
 
     db.all(
-        // Да, мне лень писать отдельные методы для поиска по username и display_name. Вопросы?
         `SELECT id, username, display_name FROM users WHERE username LIKE ? OR display_name LIKE ?`,
         [`%${q}%`, `%${q}%`],
         (err, rows) => {
             if (err) { return res.status(500).json({ message: err.message }); }
 
             return res.status(200).json(rows);
+        }
+    );
+};
+
+router.getRole = (req, res) => {
+    const db = DB.getUsers();
+    const userId = req.user.id;
+
+    db.get(
+        `SELECT role FROM users WHERE id = ?`,
+        [userId],
+        (err, row) => {
+            if (err) { return res.status(500).json({ message: err.message }); }
+
+            return res.status(200).json({ role: row.role });
         }
     );
 };

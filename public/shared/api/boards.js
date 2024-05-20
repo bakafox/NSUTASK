@@ -10,7 +10,7 @@ function getUserBoards(token) {
 }
 
 function getBoardInfo(token, boardId) {
-    fetch(`../api/board/${boardId}`, {
+    fetch(`../api/board${boardId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -20,7 +20,7 @@ function getBoardInfo(token, boardId) {
     .catch(error => console.error(error));
 }
 
-function createBoard(token, name, description, submitsAutoaccept, submitsBodyMin, submitsStrictDueDate) {
+function createBoard(token, name, description, submitsAutoaccept, submitsBodySize, submitsStrictDueDate) {
     fetch(`../api/boards`, {
         method: 'POST',
         headers: {
@@ -29,7 +29,7 @@ function createBoard(token, name, description, submitsAutoaccept, submitsBodyMin
         },
         body: JSON.stringify({
             name, description, configSubmitsAutoaccept: submitsAutoaccept === '1',
-            configSubmitsBodyMin: submitsBodyMin, configSubmitsStrictDueDate: submitsStrictDueDate === '1'
+            configSubmitsBodySize: submitsBodySize, configSubmitsStrictDueDate: submitsStrictDueDate === '1'
         })
     })
     .then(response => response.json())
@@ -37,8 +37,8 @@ function createBoard(token, name, description, submitsAutoaccept, submitsBodyMin
     .catch(error => console.error(error));
 }
 
-function createBoard(token, boardId, name, description, submitsAutoaccept, submitsBodyMin, submitsStrictDueDate) {
-    fetch(`../api/board/${boardId}`, {
+function editBoardInfo(token, boardId, name, description, submitsAutoaccept, submitsBodySize, submitsStrictDueDate) {
+    fetch(`../api/board${boardId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ function createBoard(token, boardId, name, description, submitsAutoaccept, submi
         },
         body: JSON.stringify({
             name, description, configSubmitsAutoaccept: submitsAutoaccept === '1',
-            configSubmitsBodyMin: submitsBodyMin, configSubmitsStrictDueDate: submitsStrictDueDate === '1'
+            configSubmitsBodySize: submitsBodySize, configSubmitsStrictDueDate: submitsStrictDueDate === '1'
         })
     })
     .then(response => response.json())
@@ -55,7 +55,7 @@ function createBoard(token, boardId, name, description, submitsAutoaccept, submi
 }
 
 function deleteBoard(token, boardId) {
-    fetch(`../api/board/${boardId}`, {
+    fetch(`../api/board${boardId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -67,7 +67,7 @@ function deleteBoard(token, boardId) {
 }
 
 function getMembers(token, boardId) {
-    fetch(`../api/board/${boardId}/users`, {
+    fetch(`../api/board${boardId}/users`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -78,7 +78,7 @@ function getMembers(token, boardId) {
 }
 
 function addMember(token, boardId, userId) {
-    fetch(`../api/board/${boardId}/user/${userId}`, {
+    fetch(`../api/board${boardId}/user${userId}`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -90,7 +90,7 @@ function addMember(token, boardId, userId) {
 }
 
 function deleteMember(token, boardId, userId) {
-    fetch(`../api/board/${boardId}/user/${userId}`, {
+    fetch(`../api/board${boardId}/user${userId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`

@@ -51,7 +51,7 @@ function getBoards() {
             CREATE TABLE IF NOT EXISTS board_configs (
                 board_id INTEGER PRIMARY KEY NOT NULL,
                 submits_autoaccept INTEGER DEFAULT 0,
-                submits_body_min TEXT DEFAULT 0,
+                submits_body_size INTEGER DEFAULT 0,
                 submits_strict_due_date INTEGER DEFAULT 0
             )
         `);

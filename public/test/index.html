@@ -15,8 +15,8 @@
     <script src="/shared/api/tasks.js" defer></script>
     <script src="/shared/api/submits.js" defer></script>
     
-    <script src="auth.js"></script>
-    <script src="wrap.js"></script>
+    <script src="/shared/cookieToken.js" defer></script>
+    <script src="wrap.js" defer></script>
 </head>
 <body>
 
@@ -24,8 +24,8 @@
     <h1 class="flex-center">NSUTASK API Sandbox v2</h1>
     <div>
         <input type="text" id="get-token" placeholder="session_token">
-        <button onclick="wrap_addToken()">Вставить в куки</button>
-        <button onclick="wrap_clearToken()">Очистить из кук</button>
+        <button onclick="setToken( document.querySelector('#get-token').value.trim() )">Вставить в куки</button>
+        <button onclick="setToken( null )">Очистить из кук</button>
         <span style="float: right;">
             <b>U:</b> — пользователь, <b>O:</b> — оператор
             <br>
@@ -36,6 +36,19 @@
 
 <main>
     <section class="card flex-fullcol flex-center">
+        <h2>Users</h2>
+        <div>
+            <button onclick="wrap_login()">login</button>
+            <button onclick="wrap_register()">register</button>
+            <br>
+            <button onclick="wrap_getUsers()">U: getUsers</button>
+            <button onclick="wrap_getUser()">U: getUser</button>
+            <button onclick="wrap_findUsers()">U: findUsers</button>
+            <button onclick="wrap_getRole()">U: getRole</button>
+        </div>
+    </section>
+
+    <section class="card flex-fullcol flex-center">
         <h2>Boards</h2>
         <div>
             <button onclick="wrap_getUserBoards()">U: getUserBoards</button>
@@ -45,21 +58,9 @@
             <button onclick="wrap_editBoardInfo()">O: editBoardInfo</button>
             <button onclick="wrap_deleteBoard()">O: deleteBoard</button>
             <br>
-            <button onclick="wrap_getMembers()">U: getMembers</button>
+            <button onclick="wrap_getMembers()">O: getMembers</button>
             <button onclick="wrap_addMember()">O: addMember</button>
             <button onclick="wrap_deleteMember()">O: deleteMember</button>
-        </div>
-    </section>
-    
-    <section class="card flex-fullcol flex-center">
-        <h2>Submits</h2>
-        <div>
-            <button onclick="wrap_getSubmitInfo()">U: getSubmitInfo</button>
-            <button onclick="wrap_createSubmit()">U: createSubmit</button>
-            <button onclick="wrap_deleteSubmit()">U: deleteSubmit</button>
-            <br>
-            <button onclick="wrap_getTaskSubmits()">O: getTaskSubmits</button>
-            <button onclick="wrap_setSubmitStatus()">O: setSubmitStatus</button>
         </div>
     </section>
     
@@ -74,16 +75,16 @@
             <button onclick="wrap_deleteTask()">O: deleteTask</button>
         </div>
     </section>
-        
+
     <section class="card flex-fullcol flex-center">
-        <h2>Users</h2>
+        <h2>Submits</h2>
         <div>
-            <button onclick="wrap_login()">login</button>
-            <button onclick="wrap_register()">register</button>
+            <button onclick="wrap_getSubmitInfo()">U: getSubmitInfo</button>
+            <button onclick="wrap_createSubmit()">U: createSubmit</button>
+            <button onclick="wrap_deleteSubmit()">U: deleteSubmit</button>
             <br>
-            <button onclick="wrap_getUsers()">O: getUsers</button>
-            <button onclick="wrap_getUser()">O: getUser</button>
-            <button onclick="wrap_findUsers()">O: findUsers</button>
+            <button onclick="wrap_getTaskSubmits()">O: getTaskSubmits</button>
+            <button onclick="wrap_setSubmitStatus()">O: setSubmitStatus</button>
         </div>
     </section>
 </main>

@@ -32,6 +32,12 @@ function wrap_findUsers() {
     return findUsers(token, query);
 }
 
+function wrap_getRole() {
+    const token = getToken();
+
+    return getRole(token);
+}
+
 
 
 // BOARDS
@@ -126,12 +132,13 @@ function wrap_createTask() {
 function wrap_editTaskInfo() {
     const token = getToken();
     const boardId = prompt('Введите ID доски:');
+    const taskId = prompt('Введите ID задачи:');
     const title = prompt('Введите заголовок задачи:');
     const body = prompt('Введите текст задачи:');
     const dateDue = prompt('Введите срок задачи в формате JS ISO-8601:');
     const priority = prompt('Выберите приоритет задачи ("low", "normal" или "high"):');
 
-    return editTaskInfo(token, boardId, title, body, dateDue, priority);
+    return editTaskInfo(token, boardId, taskId, title, body, dateDue, priority);
 }
 function wrap_deleteTask() {
     const token = getToken();

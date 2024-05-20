@@ -1,5 +1,5 @@
 function getBoardTasks(token, boardId) {
-    fetch(`../api/board/${boardId}/tasks`, {
+    fetch(`../api/board${boardId}/tasks`, {
         headers: {
         'Authorization': `Bearer ${token}`
         }
@@ -10,7 +10,7 @@ function getBoardTasks(token, boardId) {
 }
 
 function getTaskInfo(token, boardId, taskId) {
-    fetch(`../api/board/${boardId}/task/${taskId}`, {
+    fetch(`../api/board${boardId}/task${taskId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -21,7 +21,7 @@ function getTaskInfo(token, boardId, taskId) {
 }
 
 function createTask(token, boardId, title, body, dateDue, priority) {
-    fetch(`../api/board/${boardId}/tasks`, {
+    fetch(`../api/board${boardId}/tasks`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ function createTask(token, boardId, title, body, dateDue, priority) {
 }
 
 function editTaskInfo(token, boardId, taskId, title, body, dateDue, priority) {
-    fetch(`../api/board/${boardId}/task/${taskId}`, {
+    fetch(`../api/board${boardId}/task${taskId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ function editTaskInfo(token, boardId, taskId, title, body, dateDue, priority) {
 }
 
 function deleteTask(token, boardId, taskId) {
-        fetch(`../api/board/${boardId}/task/${taskId}`, {
+        fetch(`../api/board${boardId}/task${taskId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`
