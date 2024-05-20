@@ -1,0 +1,12 @@
+main {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+section {
+    display: inline;
+}
+
+section button {
+    margin: 2px 0;
+}

@@ -24,16 +24,14 @@ app.use('/api/', submitRoute); // api/boardABC/taskIJK/submit ИЛИ api/boardAB
 
 
 
-app.use('/', express.static(path.join(__dirname, 'public/tasklist')));
-app.use(['/login', '/register', '/auth'], express.static(path.join(__dirname, 'public/users')));
+app.use('/test', express.static(path.join(__dirname, 'public/test')));
+app.use('/', express.static(path.join(__dirname, 'public/index')));
 app.use('/shared', express.static(path.join(__dirname, 'public/shared')));
-//app.use('/auth', express.static(path.join(__dirname, 'public/if-auth')));
-//app.use('/config', express.static(path.join(__dirname, 'public/if-config')));
 
 
 
 // Дополнительные команды для дебага добавляьт ВНУТРЬ функции!
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6789;
 app.listen(PORT, () => {
     console.log(`Проект запущен на порту ${PORT}...`);
 });

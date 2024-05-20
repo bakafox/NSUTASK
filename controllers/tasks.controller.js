@@ -23,7 +23,7 @@ router.getBoardTasks = (req, res) => {
                 (err, rows) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
         
-                    return res.status(200).json(rows);
+                    return res.status(200).json(rows.map(row => row.id));
                 }
             );
         }

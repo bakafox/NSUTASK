@@ -11,7 +11,8 @@ router.post('/users/register', usersController.register);
 
 router.get('/users', authDV.validateUser, usersController.getUsers);
 router.get('/user:user_id', authDV.validateUser, usersController.getUser);
-router.get('/findUsers', authDV.validateOperator, usersController.findUsers);
+router.get('/users/find', authDV.validateUser, usersController.findUsers);
+router.get('/users/role', authDV.validateUser, usersController.getRole);
 
 
 

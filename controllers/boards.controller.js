@@ -18,7 +18,7 @@ router.getUserBoards = (req, res) => {
         (err, rows) => {
             if (err) { return res.status(500).json({ message: err.message }); }
 
-            return res.status(200).json(rows);
+            return res.status(200).json(rows.map(row => row.board_id));
         }
     );
 };
@@ -60,14 +60,13 @@ router.getBoardInfo = (req, res) => {
 // МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
 router.createBoard = (req, res) => {
     const userId = req.user.id;
-    const { name, description } = req.body;
+    let { name, description, configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate } = req.body;
     const db = DB.getBoards();
     
-    let { configSubmitsAutoaccept, configSubmitsBodyMin, configSubmitsStrictDueDate } = req.body;
     // В SQLite нет оператора BOOLEAN, официальная документация говорит
     // хранить их как INTEGER со значением 0 или 1... легковесненько.
     if (!configSubmitsAutoaccept) { configSubmitsAutoaccept = 0; }
-    if (!configSubmitsBodyMin) { configSubmitsBodyMin = 1; }
+    if (!configSubmitsBodySize) { configSubmitsBodySize = 1; }
     if (!configSubmitsStrictDueDate) { configSubmitsStrictDueDate = 0; }
 
     db.run(
@@ -78,8 +77,8 @@ router.createBoard = (req, res) => {
 
             const newBoardId = this.lastID;
             db.run(
-                `INSERT INTO board_configs (board_id, submits_autoaccept, submits_body_min, submits_strict_due_date) VALUES (?, ?, ?, ?)`,
-                [newBoardId, configSubmitsAutoaccept, configSubmitsBodyMin, configSubmitsStrictDueDate],
+                `INSERT INTO board_configs (board_id, submits_autoaccept, submits_body_size, submits_strict_due_date) VALUES (?, ?, ?, ?)`,
+                [newBoardId, configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate],
                 (err) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
 
@@ -106,13 +105,12 @@ router.createBoard = (req, res) => {
 };
 
 router.editBoardInfo = (req, res) => {
-    const boardId = req.params.board_id;
-    const { name, description } = req.body;
+    const userId = req.user.id, boardId = req.params.board_id;
+    let { name, description, configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate } = req.body;
     const db = DB.getBoards();
 
-    let { configSubmitsAutoaccept, configSubmitsBodyMin, configSubmitsStrictDueDate } = req.body;
     if (!configSubmitsAutoaccept) { configSubmitsAutoaccept = 0; }
-    if (!configSubmitsBodyMin) { configSubmitsBodyMin = 1; }
+    if (!configSubmitsBodySize) { configSubmitsBodySize = 1; }
     if (!configSubmitsStrictDueDate) { configSubmitsStrictDueDate = 0; }
 
     db.get(
@@ -130,8 +128,8 @@ router.editBoardInfo = (req, res) => {
                     if (this.changes === 0) { return res.status(404).json({ message: 'Такой доски не существует.' }); }
         
                     db.run(
-                        `UPDATE board_configs SET submits_autoaccept = ?, submits_body_min = ?, submits_strict_due_date = ? WHERE board_id = ?`,
-                        [configSubmitsAutoaccept, configSubmitsBodyMin, configSubmitsStrictDueDate, boardId],
+                        `UPDATE board_configs SET submits_autoaccept = ?, submits_body_size = ?, submits_strict_due_date = ? WHERE board_id = ?`,
+                        [configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate, boardId],
                         function (err) {
                             if (err) { return res.status(500).json({ message: err.message }); }
                             if (this.changes === 0) { return res.status(404).json({ message: 'Такой доски не существует.' }); }
@@ -155,6 +153,17 @@ router.deleteBoard = (req, res) => {
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
+
+            // проверяем, является ли пользователем создателем доски
+            db.get(
+                `SELECT * FROM boards WHERE id = ? AND user_creator = ?`,
+                [boardId, userId],
+                (err, row) => {
+                    if (err) { return res.status(500).json({ message: err.message }); }
+
+                    if (!row) { return res.status(403).json({ message: 'Удалить доску может только её создатель.' }); }
+                }
+            )
 
             db.run(
                 `DELETE FROM boards WHERE id = ? AND user_creator = ?`,
@@ -210,7 +219,7 @@ router.getMembers = (req, res) => {
                 (err, rows) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
 
-                    return res.status(200).json(rows);
+                    return res.status(200).json(rows.map(row => row.user_id));
                 }
             );
         }
