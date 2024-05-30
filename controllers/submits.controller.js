@@ -56,7 +56,8 @@ router.createSubmit = (req, res) => {
                     boardConfigs.submits_body_size = row.submits_body_size;
                     boardConfigs.submits_strict_due_date = row.submits_strict_due_date;
 
-                    if (txt.length && txt.length < boardConfigs.submits_body_size) {
+                    if (((txt === undefined) && (boardConfigs.submits_body_size > 0))
+                        || (txt.length < boardConfigs.submits_body_size)) {
                         return res.status(400).json({ message: 'Посылка для этой задачи должна содержать не менее ' + boardConfigs.submits_body_size + ' символов.' });
                     }
         
@@ -75,7 +76,7 @@ router.createSubmit = (req, res) => {
                             }
         
                             dataDb.get(
-                                `SELECT * FROM task_submits WHERE user_id = ?`,
+                                `SELECT * FROM task_submits WHERE user_id = ? AND task_id = ?`,
                                 [userId],
                                 (err, row) => {
                                     if (err) { return res.status(500).json({ message: err.message }); }
@@ -112,15 +113,30 @@ router.deleteSubmit = (req, res) => {
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
-
-            dataDb.run(
-                `DELETE FROM task_submits WHERE user_id = ? AND task_id = ?`,
+            
+            dataDb.get(
+                `SELECT status FROM task_submits WHERE user_id = ? AND task_id = ?`,
                 [userId, taskId],
-                function(err) {
+                (err, row) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
-                    if (this.changes === 0) { return res.status(404).json({ message: 'Вы ещё не отправляли посылку для этой задачи.' }); }
+                    if (!row) { return res.status(404).json({ message: 'Вы ещё не отправляли посылку для этой задачи.' }); }
 
-                    return res.status(200).json({ id: userId });
+                    if (row.status === 'accepted') {
+                        return res.status(400).json({ message: 'Ваша посылка была принята, теперь её нельзя удалить.' });
+                    }
+
+                    else {
+                        dataDb.run(
+                            `DELETE FROM task_submits WHERE user_id = ? AND task_id = ?`,
+                            [userId, taskId],
+                            function(err) {
+                                if (err) { return res.status(500).json({ message: err.message }); }
+                                if (this.changes === 0) { return res.status(404).json({ message: 'Вы ещё не отправляли посылку для этой задачи.' }); }
+            
+                                return res.status(200).json({ id: userId });
+                            }
+                        );
+                    }
                 }
             );
         }
@@ -148,6 +164,31 @@ router.getTaskSubmits = (req, res) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
 
                     return res.status(200).json(rows.map(row => row.id));
+                }
+            );
+        }
+    );
+};
+
+router.getTaskSubmit = (req, res) => {
+    const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id, submitId = req.params.submit_id;
+    const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
+
+    boardsDb.get(
+        `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
+        [boardId, userId],
+        (err, row) => {
+            if (err) { return res.status(500).json({ message: err.message }); }
+            if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
+
+            dataDb.get(
+                `SELECT * FROM task_submits WHERE id = ? AND task_id = ?`,
+                [submitId, taskId],
+                (err, row) => {
+                    if (err) { return res.status(500).json({ message: err.message }); }
+                    if (!row) { return res.status(404).json({ message: 'Такой посылки не существует, либо не существует такой задачи.' }); }
+
+                    return res.status(200).json(row);
                 }
             );
         }

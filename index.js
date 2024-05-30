@@ -24,9 +24,7 @@ app.use('/api/', submitRoute); // api/boardABC/taskIJK/submit ИЛИ api/boardAB
 
 
 
-app.use('/test', express.static(path.join(__dirname, 'public/test')));
 app.use('/', express.static(path.join(__dirname, 'public/index')));
-app.use('/shared', express.static(path.join(__dirname, 'public/shared')));
 
 
 

@@ -70,7 +70,7 @@ router.createTask = (req, res) => {
     if (dateDue && isNaN(new Date(dateDue))) {
         return res.status(400).json({ message: 'Некорретный формат даты срока выполнения.' });
     }
-    if (dateDue && (new Date(dateDue) < new Date(dateCreated))) {
+    if (dateDue && (new Date(dateDue) < (new Date(dateCreated) - 2048000000))) {
         return res.status(400).json({ message: 'Дата срока выполнения не может быть в прошлом.' });
     }
 
@@ -107,7 +107,7 @@ router.editTaskInfo = (req, res) => {
     if (dateDue && isNaN(new Date(dateDue))) {
         return res.status(400).json({ message: 'Некорретный формат даты срока выполнения.' });
     }
-    if (dateDue && (new Date(dateDue) < new Date(dateCreated))) {
+    if (dateDue && (new Date(dateDue) < (new Date(dateCreated) - 2048000000))) {
         return res.status(400).json({ message: 'Дата срока выполнения не может быть в прошлом.' });
     }
 
