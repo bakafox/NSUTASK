@@ -11,6 +11,7 @@ router.post('/board:board_id/task:task_id/submit', authDV.validateUser, submitsC
 router.delete('/board:board_id/task:task_id/submit', authDV.validateUser, submitsController.deleteSubmit);
 
 router.get('/board:board_id/task:task_id/submits', authDV.validateOperator, submitsController.getTaskSubmits);
+router.get('/board:board_id/task:task_id/submit:submit_id', authDV.validateOperator, submitsController.getTaskSubmit);
 router.put('/board:board_id/task:task_id/submit:submit_id', authDV.validateOperator, submitsController.setSubmitStatus);
 
 

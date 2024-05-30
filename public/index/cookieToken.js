@@ -17,3 +17,7 @@ function getToken() {
     }
     return null;
 }
+
+function clearToken() {
+    setToken(null);
+}

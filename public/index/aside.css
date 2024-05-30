@@ -1,0 +1,135 @@
+html {
+    --bg-aside: #0d131dcc;
+
+    --aside-action-bg: #fff2;
+    --aside-action-bg-hover: #fff4;
+    --aside-action-bg-active: #fff5;
+    --aside-action-bg-selected: #fff;
+    --aside-action-color: var(--text-white);
+    --aside-action-color-selected: var(--text-black-pale);
+
+    --gray: #999;
+    --accepted: #0d0;
+    --pending: #fa0;
+    --rejected: #b00;
+}
+
+
+
+aside {
+    top: 0;
+    height: 100vh;
+    position: fixed;
+    box-sizing: border-box;
+    padding: var(--gap-big);
+    background: var(--bg-aside); color: var(--text-white);
+    box-shadow: var(--shadow-regular);
+    backdrop-filter: blur(var(--blur-backdrop-bg));
+    overflow: hidden scroll;
+}
+
+.pale {
+    color: var(--text-white-pale);
+}
+
+
+
+#boardman-wrapper {
+    left: 0;
+    width: 240px;
+    transition: transform .3s;
+}
+#boardman-wrapper.closed {
+    transform: translateX(-120%);
+}
+
+#boardman {
+    gap: var(--gap-small);
+}
+
+.boardman-item, aside button {
+    min-height: 40px;
+    background: var(--aside-action-bg); color: var(--text-white);
+    border: none; border-radius: var(--rounding-small);
+    overflow: hidden; text-overflow: clip;
+    cursor: pointer;
+}
+.boardman-item:hover, aside button:hover {
+    background: var(--aside-action-bg-hover);
+}
+.boardman-item:active, aside button:active {
+    background: var(--aside-action-bg-active);
+}
+.boardman-item.selected {
+    background: var(--aside-action-bg-selected);
+    color: var(--text-black-pale);
+}
+.boardman-item.selected::after {
+    content: '▶';
+    position: absolute;
+    margin-top: -15px;
+    right: 2px;
+    color: var(--aside-action-bg-selected);
+    font-size: 2rem;
+}
+.boardman-item:disabled, aside button:disabled {
+    background: var(--aside-action-bg); color: var(--text-white-pale);
+    cursor: not-allowed;
+}
+
+.boardman-spacer {
+    width: 240px;
+    flex: 0 0 auto;
+    transition: width .3s;
+}
+.boardman-spacer.closed {
+    width: 0;
+}
+
+@media (max-width: 720px) {
+    .boardman-spacer, #boardman-wrapper {
+        width: 120px;
+    }
+}
+
+
+
+#taskman {
+    right: 0;
+    width: 480px;
+    transition: transform .3s;
+}
+#taskman.closed {
+    transform: translateX(120%);
+}
+
+.taskman-spacer {
+    width: 480px;
+    flex: 0 0 auto;
+    transition: width .3s;
+}
+.taskman-spacer.closed {
+    width: 0;
+}
+
+.taskman-tasksubmit__status {
+    width: fit-content;
+    margin: 4px 0; padding: 2px 6px;
+    background: var(--gray); color: var(--text-white);
+    border-radius: var(--rounding-full);
+}
+.taskman-tasksubmit__status-accepted {
+    background: var(--accepted);
+}
+.taskman-tasksubmit__status-pending {
+    background: var(--pending);
+}
+.taskman-tasksubmit__status-rejected {
+    background: var(--rejected);
+}
+
+@media (max-width: 720px) {
+    .taskman-spacer, #taskman {
+        width: 100%;
+    }
+}
