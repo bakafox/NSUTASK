@@ -99,7 +99,7 @@ html {
     width: 300px;
     box-sizing: border-box;
     border-radius: var(--rounding-regular);
-    transition: background-color .2s;
+    transition: background-color var(--transition-fast);
 }
 
 .taskcat-wrapper {
@@ -153,7 +153,7 @@ html {
     margin-bottom: 2px; padding: var(--gap-medium);
     background-color: var(--bg-task);
     cursor: pointer;
-    transition: background-color .2s;
+    transition: background-color var(--transition-fast);
 }
 .task:hover {
     background-color: var(--bg-task-hover);

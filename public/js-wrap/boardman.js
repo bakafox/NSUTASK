@@ -17,16 +17,14 @@ function createBoardmanBoard(data) {
     boardContainerState.name = 'boardman-state';
     
     const boardContainer = document.createElement('label');
-    
-    boardContainer.className = 'boardman-item';
+    boardContainer.className = 'boardman-item text-clip';
     boardContainer.innerText = data.name;
     boardContainer.title = data.description;
-    boardContainer.classList.add('text-clip');
 
     // Несмотря на скрытие в CSS, JS назначает таргет и для
     // input, и для label, поэтому если бы здесь был boardContainer,
     // фукнция по click вызывалась бы ДВАЖДЫ... это JS, детка!
-    boardContainerState.onclick = function() {
+    boardContainerState.onclick = () => {
         closeTaskmanView();
         
         currentBoard = data.id;

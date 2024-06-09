@@ -4,7 +4,9 @@ html {
     --gap-small: 6px;
     --gap-tiny: 2px;
 
-    --bg-main: #ffe4cf;
+    --brand-accent: #f64;
+    --brand-main: #ffe4cf;
+    --bg-main: var(--brand-main);
     --bg-image-mask: #4448;
     --bg-card: #fffc;
 
@@ -22,6 +24,9 @@ html {
     --rounding-small: 4px;
     --rounding-full: 1000px;
     --blur-backdrop-bg: .44vh;
+
+    --transition-slow: .3s;
+    --transition-fast: .2s;
 }
 
 body {

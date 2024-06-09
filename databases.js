@@ -15,6 +15,7 @@ function getUsers() {
     if (!fs.existsSync('./data/users.sqlite')) {
         console.warn('[!!!] База данных пользователей не найдена.');
     }
+
     const db = new sqlite3.Database('./data/users.sqlite');
 
     db.serialize(() => {

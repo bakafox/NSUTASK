@@ -61,9 +61,9 @@ function validateOperator(req, res, next) {
     validateUser(req, res, () => {
         // Мы НЕ ХРАНИМ роль пользователя в токене сессии из соображений безопасности,
         // поэтому проверка осуществляется прямо в базе данных. Медленнее, зато безопаснее!
-        const db = DB.getUsers();
+        const usersDb = DB.getUsers();
 
-        db.get(
+        usersDb.get(
             `SELECT * FROM users WHERE id = ? AND role = 'operator'`,
             [req.user.id],
             (err, row) => {

@@ -37,7 +37,7 @@ aside {
 #boardman-wrapper {
     left: 0;
     width: 240px;
-    transition: transform .3s;
+    transition: transform var(--transition-slow);
 }
 #boardman-wrapper.closed {
     transform: translateX(-120%);
@@ -45,7 +45,7 @@ aside {
 .boardman-spacer {
     width: 240px;
     flex: 0 0 auto;
-    transition: width .3s;
+    transition: width var(--transition-slow);
 }
 .boardman-spacer.closed {
     width: 0;
@@ -104,7 +104,7 @@ aside {
 #taskman {
     right: 0;
     width: 480px;
-    transition: transform .3s;
+    transition: transform var(--transition-slow);
 }
 #taskman.closed {
     transform: translateX(120%);
@@ -112,7 +112,7 @@ aside {
 .taskman-spacer {
     width: 480px;
     flex: 0 0 auto;
-    transition: width .3s;
+    transition: width var(--transition-slow);
 }
 .taskman-spacer.closed {
     width: 0;

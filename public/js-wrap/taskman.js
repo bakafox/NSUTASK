@@ -132,14 +132,13 @@ function taskmanSendSubmit() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message !== undefined) {
-            alert(data.message);
-        }
+        if (data.message !== undefined) { alert(data.message); }
         else {
             alert('Посылка успешно отправлена!');
+            document.querySelector('#taskman-actions__submit-body').value = '';
+            updateTasklist();
+            taskmanGetInfo(currentTask);
         }
-        document.querySelector('#taskman-actions__submit-body').value = '';
-        taskmanGetInfo(currentTask);
     })
     .catch(error => console.error(error));
 }
@@ -155,13 +154,12 @@ function taskmanDeleteSubmit() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message !== undefined) {
-            alert(data.message);
-        }
+        if (data.message !== undefined) { alert(data.message); }
         else {
-            alert('Посылка успешно удалена.');
+            //alert('Посылка успешно удалена.');
+            updateTasklist();
+            taskmanGetInfo(currentTask);
         }
-        taskmanGetInfo(currentTask);
     })
     .catch(error => console.error(error));
 }

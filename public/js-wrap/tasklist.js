@@ -85,17 +85,22 @@ function createTasklistTask(taskData, submitData) {
         categoryName = '⚒️ К выполнению';
     }
     else {
-        if (submitData.status === 'pending') {
-            categoryId = 'pending';
-            categoryName = '🐝 На рассмотрении…';
-        }
-        else if (submitData.status === 'accepted') {
-            categoryId = 'accepted';
-            categoryName = '🏆 ПРИНЯТО!';
-        }
-        else if (submitData.status === 'rejected') {
-            categoryId = 'rejected';
-            categoryName = '🗿 Отклонено';
+        categoryId = submitData.status;
+
+        switch (submitData.status) {
+            case 'pending':
+                categoryName = '🐝 На рассмотрении…';
+                break;
+            case 'accepted':
+                categoryName = '🏆 ПРИНЯТО!';
+                break;
+            case 'rejected':
+                categoryName = '🗿 Отклонено';
+                break;
+            default:
+                categoryId = 'unknown';
+                categoryName = '⁉️ Неизвестно';
+                break;
         }
     }
 
