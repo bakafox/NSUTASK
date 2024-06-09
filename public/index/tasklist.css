@@ -7,6 +7,9 @@ html {
     --bg-groupinfo: #fffa;
     --bg-groupinfo-hover: #fffe;
     --bg-groupinfo-active: #ffff;
+
+    --bg-task-outdated: #f333;
+    --text-task-outdated: #c00;
 }
 
 
@@ -162,4 +165,11 @@ html {
 .task-header, .task-content {
     cursor: pointer;
     /*user-select: none;*/
+}
+
+
+
+.task-outdated {
+    color: var(--text-task-outdated);
+    background: var(--bg-task-outdated);
 }

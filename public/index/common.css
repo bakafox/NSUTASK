@@ -21,7 +21,8 @@ html {
     --rounding-regular: 8px;
     --rounding-small: 4px;
     --rounding-full: 1000px;
-    --blur-backdrop-bg: 5px;
+    --blur-backdrop-bg: .44vh;
+    /*--blur-backdrop-bg: 4px;*/
 }
 
 body {

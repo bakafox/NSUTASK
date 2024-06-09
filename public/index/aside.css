@@ -9,9 +9,9 @@ html {
     --aside-action-color-selected: var(--text-black-pale);
 
     --gray: #999;
-    --accepted: #0d0;
+    --accepted: #0a0;
     --pending: #fa0;
-    --rejected: #b00;
+    --rejected: #a00;
 }
 
 
@@ -60,21 +60,29 @@ aside {
 .boardman-item:active, aside button:active {
     background: var(--aside-action-bg-active);
 }
-.boardman-item.selected {
+.boardman-item:disabled, aside button:disabled {
+    background: var(--aside-action-bg); color: var(--text-white-pale);
+    cursor: not-allowed;
+}
+
+.boardman-item {
+    text-align: center;
+    align-content: center;
+}
+.boardman-item-state {
+    display: none;
+}
+.boardman-item:has(.boardman-item-state:checked) {
     background: var(--aside-action-bg-selected);
     color: var(--text-black-pale);
 }
-.boardman-item.selected::after {
+.boardman-item:has(.boardman-item-state:checked)::after {
     content: '▶';
     position: absolute;
     margin-top: -15px;
     right: 2px;
     color: var(--aside-action-bg-selected);
     font-size: 2rem;
-}
-.boardman-item:disabled, aside button:disabled {
-    background: var(--aside-action-bg); color: var(--text-white-pale);
-    cursor: not-allowed;
 }
 
 .boardman-spacer {

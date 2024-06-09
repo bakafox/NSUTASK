@@ -1,5 +1,11 @@
 function updateTasklist() {
     const token = getToken();
+    const tasklist = document.querySelector('#tasklist');
+    
+    if (currentBoard === null) {
+        document.querySelector('#tasklist').innerHTML = '<h1 class="tasklist-placeholder">Выберите доску, чтобы начать работу.</h1>';
+        return;
+    }
 
     fetch(`../api/board${currentBoard}/tasks`, {
         headers: {
@@ -8,8 +14,6 @@ function updateTasklist() {
     })
     .then(response => response.json())
     .then(data => {
-
-        const tasklist = document.querySelector('#tasklist');
         tasklist.innerHTML = '';
 
         if (data.length > 0) {
@@ -29,32 +33,6 @@ function updateTasklist() {
 
     })
     .catch(error => console.error(error));
-}
-
-function DDMMYYtoISO(dateString) {
-    try {
-        const parts = dateString.split(".");
-        const date = new Date(0); // Нас интересует только день
-
-        date.setDate(parts[0]);
-        date.setMonth(parts[1]-1);
-        date.setFullYear(2000 + +parts[2]);
-
-        return date.toISOString();
-    }
-    catch {
-        return null;
-    }
-}
-
-function ISOtoDDMMYY(dateString) {
-    try {
-        const date = new Date(dateString).toISOString().replace(/T.*/,'').split('-').reverse().join('.')
-        return date;
-    }
-    catch {
-        return dateString;
-    }
 }
 
 
@@ -157,6 +135,10 @@ function createTasklistTask(boardId, taskId) {
             if (data.date_due !== null) {
             const taskDueDate = ISOtoDDMMYY(data.date_due);
                 taskDue.innerText = `Срок сдачи: ДО ${taskDueDate}`;
+
+                if (checkIfOutdated(data.date_due)) {
+                    taskDue.classList.add('task-outdated');
+                }
             }
         
             taskContent.onclick = () => {

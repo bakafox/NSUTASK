@@ -43,8 +43,11 @@ function taskmanGetInfo(taskId) {
         const taskDue = document.createElement('i');
         if (data.date_due !== null) {
             const taskDueDate = ISOtoDDMMYY(data.date_due);
-            taskDue.innerText = `Срок сдачи: ДО ${taskDueDate} (НЕ включительно)`;
+            taskDue.innerText = `Срок сдачи: ДО ${taskDueDate} (не включительно)`;
             
+            if (checkIfOutdated(data.date_due)) {
+                taskDue.classList.add('task-outdated');
+            }
         }
         else {
             taskDue.innerText = `Без крайнего срока сдачи.`;
@@ -62,7 +65,7 @@ function taskmanGetInfo(taskId) {
         .then(data => {
             console.log(data);
             if (data.message !== undefined) {
-                taskSubmits.innerHTML = '<span class="pale">Вы ещё не отправляли посылку для этой задачи — <br>самое время отправить!</p>';
+                taskSubmits.innerHTML = '<span class="pale">Вы ещё не отправляли посылку для этой задачи&nbsp;— <br>самое время отправить!</p>';
         
                 document.querySelector('#taskman-actions__submit-body').classList.remove('hidden');
                 document.querySelector('#taskman-actions__btn-submit').classList.remove('hidden');
@@ -108,7 +111,6 @@ function taskmanGetInfo(taskId) {
 
                 document.querySelector('#taskman-actions__submit-body').classList.add('hidden');
                 document.querySelector('#taskman-actions__btn-submit').classList.add('hidden');
-                document.querySelector('#taskman-actions__btn-delete').classList.remove('hidden');
             }
  
         })

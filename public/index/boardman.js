@@ -18,23 +18,39 @@ function createBoardmanBoard(boardId) {
     })
     .then(response => response.json())
     .then(data => {
-        const boardContainer = document.createElement('button');
-        boardContainer.className = 'boardman-item';
+        const boardContainerState = document.createElement('input');
+        boardContainerState.className = 'boardman-item-state';
+        boardContainerState.type = 'radio';
+        boardContainerState.name = 'boardman-state';
+        //boardContainerState.classList.add('hidden');
 
+        const boardContainer = document.createElement('label');
+        
+        boardContainer.className = 'boardman-item';
         boardContainer.innerText = data.board.name;
         boardContainer.title = data.board.description;
-        boardContainer.onclick = function() {
+
+        // Несмотря на скрытие в CSS, JS назначает таргет и для
+        // input, и для label, поэтому если бы здесь был boardContainer,
+        // фукнция по click вызывалась бы ДВАЖДЫ... это JS, детка!
+        boardContainerState.onclick = function() {
             closeTaskmanView();
-
-            document.querySelector('.boardman-item.selected')?.classList.remove('selected');
-            this.classList.toggle('selected');
-
+            
             currentBoard = data.board.id;
+            setLastBoard(currentBoard);
             document.querySelector('#groupinfo__title').innerText = data.board.description;
-
+            
             updateTasklist();
         }
 
+        // Эта логика нужна при первой инициализации boardman
+        // для корректной обработки currentBoard из getLastBoard().
+        if (boardId === +currentBoard) {
+            boardContainerState.checked = true;
+            document.querySelector('#groupinfo__title').innerText = data.board.description;
+        }
+
+        boardContainer.appendChild(boardContainerState);
         boardman.appendChild(boardContainer);
     })
     .catch(error => console.error(error));
@@ -42,6 +58,7 @@ function createBoardmanBoard(boardId) {
 
 function updateBoardman() {
     const token = getToken();
+    const boardman = document.querySelector('#boardman');
 
     fetch(`../api/boards`, {
         headers: {
@@ -50,12 +67,12 @@ function updateBoardman() {
     })
     .then(response => response.json())
     .then(data => {
-        const boardman = document.querySelector('#boardman');
         boardman.innerHTML = '';
 
         if (data.length > 0) {
             for (const boardId of data) {
                 createBoardmanBoard(boardId);
+                //console.log(data, boardId, currentBoard);
             }
         }
         else {
@@ -97,7 +114,6 @@ function boardmanNewBoard() {
     
         else {
             createBoardmanBoard(data.id);
-            currentBoard = data.id;
             updateTasklist();
         }
     })
