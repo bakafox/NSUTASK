@@ -9,7 +9,7 @@ const DB = require('../databases');
 
 
 
-// МЕТОДЫ НИЖЕ НЕ ТРЕБУЮТ НИКАКИХ ПРЕВИЛЕГИЙ
+// МЕТОДЫ НИЖЕ НЕ ТРЕБУЮТ НИКАКИХ ПРИВИЛЕГИЙ
 router.login = (req, res) => {
     const { username, password } = req.body;
     const db = DB.getUsers();
@@ -64,7 +64,25 @@ router.register = (req, res) => {
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+router.getRole = (req, res) => {
+    const db = DB.getUsers();
+    const userId = req.user.id;
+
+    db.get(
+        `SELECT role FROM users WHERE id = ?`,
+        [userId],
+        (err, row) => {
+            if (err) { return res.status(500).json({ message: err.message }); }
+
+            return res.status(200).json({ role: row.role });
+        }
+    );
+};
+
+
+
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 router.getUsers = (req, res) => {
     const db = DB.getUsers();
 
@@ -73,7 +91,7 @@ router.getUsers = (req, res) => {
         (err, rows) => {
             if (err) { return res.status(500).json({ message: err.message }); }
 
-            return res.status(200).json(rows.map(row => row.id));
+            return res.status(200).json(rows);
         }
     );
 };
@@ -108,21 +126,6 @@ router.findUsers = (req, res) => {
             if (err) { return res.status(500).json({ message: err.message }); }
 
             return res.status(200).json(rows);
-        }
-    );
-};
-
-router.getRole = (req, res) => {
-    const db = DB.getUsers();
-    const userId = req.user.id;
-
-    db.get(
-        `SELECT role FROM users WHERE id = ?`,
-        [userId],
-        (err, row) => {
-            if (err) { return res.status(500).json({ message: err.message }); }
-
-            return res.status(200).json({ role: row.role });
         }
     );
 };

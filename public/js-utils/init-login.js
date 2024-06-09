@@ -1,7 +1,3 @@
-var showActionsForOperator = null;
-
-
-
 function initLayout() {
     const token = getToken();
 

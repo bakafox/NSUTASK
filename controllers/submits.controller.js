@@ -8,7 +8,31 @@ const authDV = require('../authDV');
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+router.getBoardSubmits = (req, res) => {
+    const userId = req.user.id, boardId = req.params.board_id;
+    const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
+
+    boardsDb.get(
+        `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
+        [boardId, userId],
+        (err, row) => {
+            if (err) { return res.status(500).json({ message: err.message }); }
+            if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
+
+            dataDb.all(
+                `SELECT task_id, status FROM task_submits WHERE task_submits.user_id = ?`,
+                [userId],
+                (err, rows) => {
+                    if (err) { return res.status(500).json({ message: err.message }); }
+
+                    return res.status(200).json(rows);
+                }
+            );
+        }
+    );
+}
+
 router.getSubmitInfo = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
@@ -145,7 +169,7 @@ router.deleteSubmit = (req, res) => {
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 router.getTaskSubmits = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);

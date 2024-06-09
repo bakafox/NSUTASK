@@ -7,18 +7,18 @@ const DB = require('../databases');
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
 router.getUserBoards = (req, res) => {
     const userId = req.user.id;
     const db = DB.getBoards();
 
     db.all(
-        `SELECT board_id FROM board_members WHERE user_id = ?`,
+        `SELECT * FROM boards WHERE id IN (SELECT board_id FROM board_members WHERE user_id = ?) ORDER BY name`,
         [userId],
         (err, rows) => {
             if (err) { return res.status(500).json({ message: err.message }); }
 
-            return res.status(200).json(rows.map(row => row.board_id));
+            return res.status(200).json(rows);
         }
     );
 };
@@ -57,7 +57,7 @@ router.getBoardInfo = (req, res) => {
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 router.createBoard = (req, res) => {
     const userId = req.user.id;
     let { name, description, configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate } = req.body;

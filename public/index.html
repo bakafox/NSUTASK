@@ -23,7 +23,7 @@
 </head>
 <body>
 
-<main id="nsutask" class="hidden">
+<main id="nsutask" class="flex-fullcol blur-behind hidden">
     <header id="groupinfo-wrapper">
         <div class="boardman-spacer"></div>
         <div id="groupinfo">
@@ -45,7 +45,7 @@
 
     <div id="tasklist-wrapper">
         <div class="boardman-spacer"></div>
-        <div id="tasklist"><h1 class="tasklist-placeholder">⌛ Загрузка...</div>
+        <div id="tasklist"><h1 class="tasklist-placeholder">⌛ Загрузка…</div>
         <div class="taskman-spacer closed"></div>
     </div>
 
@@ -59,17 +59,17 @@
             </div>
             <hr>
         </div>
-        <div id="boardman" class="flex-fullcol">Получение списка досок...</div>
+        <div id="boardman" class="flex-fullcol">Получение списка досок…</div>
     </aside>
 
     <aside id="taskman" class="flex-fullcol closed">
         <button onclick="closeTaskmanView()">Закрыть</button>
         <div id="taskman-taskinfo">
-            Получение информации о задаче...
+            Получение информации о задаче…
         </div>
         <hr>
         <div id="taskman-tasksubmits">
-            Получение информации о посылках...
+            Получение информации о посылках…
         </div>
         <div id="taskman-actions" class="flex-fullcol">
             <textarea id="taskman-actions__submit-body" placeholder="Введите или вставьте сюда текст посылки"></textarea>
@@ -78,6 +78,10 @@
         </div>
     </aside>
 </main>
+
+<dialog class="card-adaptive" id="test">
+    adasdasd
+</dialog>
 
 </body>
 </html>

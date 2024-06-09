@@ -1,43 +1,3 @@
-function updateTasklist() {
-    const token = getToken();
-    const tasklist = document.querySelector('#tasklist');
-    
-    if (currentBoard === null) {
-        document.querySelector('#tasklist').innerHTML = '<h1 class="tasklist-placeholder">Выберите доску, чтобы начать работу.</h1>';
-        return;
-    }
-
-    fetch(`../api/board${currentBoard}/tasks`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        tasklist.innerHTML = '';
-
-        if (data.length > 0) {
-            for (const taskId of data) {
-                createTasklistTask(currentBoard, taskId);
-            }
-        }
-        else {
-            tasklist.innerHTML = '<h2 class="tasklist-placeholder">Похоже, оператор этой доски пока<br>не создал ни одной задачи... пичаль.</h2>';
-        }
-
-        if (showActionsForOperator) {
-            document.querySelector('#groupinfo-actions').classList.remove('hidden');
-            document.querySelector('#boardman-actions__edit-btn').disabled = false;
-            document.querySelector('#boardman-actions__delete-btn').disabled = false;
-        }
-
-    })
-    .catch(error => console.error(error));
-}
-
-
-
-// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
 function createCategory(categoryId, categoryName) {
     const categoryContainer = document.createElement('section');
     categoryContainer.className = 'taskcat';
@@ -64,128 +24,158 @@ function createCategory(categoryId, categoryName) {
     tasklist.appendChild(categoryContainer);
 }
 
-function createTasklistTask(boardId, taskId) {
-    const token = getToken();
 
-    fetch(`../api/board${currentBoard}/task${taskId}/submit`, {
+
+// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+function updateTasklist() {
+    const token = getToken();
+    const tasklist = document.querySelector('#tasklist');
+    
+    if (currentBoard === null) {
+        document.querySelector('#tasklist').innerHTML = '<h1 class="tasklist-placeholder">Выберите доску, чтобы начать работу.</h1>';
+        return;
+    }
+
+    fetch(`../api/board${currentBoard}/submits`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
     .then(response => response.json())
-    .then(data => {
-        let categoryId = 'unknown', categoryName = 'Неизвестно';
-
-        if (data.status === undefined) {
-            categoryId = 'to-do';
-            categoryName = '⚒️ К выполнению';
-        }
-        else {
-            if (data.status === 'pending') {
-                categoryId = 'pending';
-                categoryName = '⏳ На рассмотрении...';
-            }
-            else if (data.status === 'accepted') {
-                categoryId = 'accepted';
-                categoryName = '✅ Выполнено!';
-            }
-            else if (data.status === 'rejected') {
-                categoryId = 'rejected';
-                categoryName = '⚠️ Отклонено';
-            }
-
-            // TODO: либо где-то здесь, либо в APIшке затесался баг,
-            // из-за которого интерфейс отображает только ОДНУ задачу
-            // с посылкой в любом статусе, кроме "to-do". 
-            // Скорее всего, проблема где-то в API — и, судя по всему,
-            // последний "забывает" или не может получить досут к статусам
-            // прошлых посылок после отправки или изменения новой.
-        }
-
-        fetch(`../api/board${boardId}/task${taskId}`, {
+    .then(submitsData => {
+        fetch(`../api/board${currentBoard}/tasks`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         })
         .then(response => response.json())
-        .then(data => {
-            let category = document.querySelector(`#taskcat-${categoryId}`);
-            if (!category) {
-                createCategory(categoryId, categoryName);
-                category = document.querySelector(`#taskcat-${categoryId}`);
-            }
+        .then(tasksData => {
+            tasklist.innerHTML = '';
+            
+            if (tasksData.length > 0) {
+                for (const taskData of tasksData) {
+                    const submitData = submitsData.filter(submitData => submitData.task_id === taskData.id)[0] || {};
 
-            const taskContainer = document.createElement('article');
-            taskContainer.className = 'task';
-
-            const taskContent = document.createElement('div');
-            taskContent.className = 'task-content';
-        
-            const taskTitle = document.createElement('h3');
-            taskTitle.className = 'task-content__title text-clip';
-            taskTitle.innerText = data.title;
-
-            const taskText = document.createElement('p');
-            taskText.className = 'task-content__text text-clip';
-            taskText.innerText = data.body;
-
-            const taskDue = document.createElement('i');
-            taskDue.className = 'task-content__due';
-            //console.log(data.date_due);
-            if (data.date_due !== null) {
-            const taskDueDate = ISOtoDDMMYY(data.date_due);
-                taskDue.innerText = `Срок сдачи: ДО ${taskDueDate}`;
-
-                if (checkIfOutdated(data.date_due)) {
-                    taskDue.classList.add('task-outdated');
+                    createTasklistTask(taskData, submitData);
                 }
             }
-        
-            taskContent.onclick = () => {
-                taskmanGetInfo(taskId);
-                openTaskmanView();
+            else {
+                tasklist.innerHTML = '<h2 class="tasklist-placeholder">Похоже, оператор этой доски пока<br>не создал ни одной задачи… пичаль.</h2>';
             }
-
-            taskContent.appendChild(taskTitle);
-            taskContent.appendChild(taskText);
-            taskContent.appendChild(taskDue);
-            taskContainer.appendChild(taskContent);
 
             if (showActionsForOperator) {
-                const taskActions = document.createElement('div');
-                taskActions.className = 'task-actions';
-
-                const taskActionsEdit = document.createElement('button');
-                taskActionsEdit.className = 'task-actions__edit';
-                taskActionsEdit.innerText = 'Изменить';
-                taskActionsEdit.onclick = () => tasklistEditTask(taskId);
-
-                const taskActionsDelete = document.createElement('button');
-                taskActionsDelete.className = 'task-actions__delete';
-                taskActionsDelete.innerText = 'Удалить';
-                taskActionsDelete.onclick = () => tasklistDeleteTask(taskId);
-
-                const taskActionsSubmits = document.createElement('button');
-                taskActionsSubmits.className = 'task-actions__submits';
-                taskActionsSubmits.innerText = 'Посылки';
-                taskActionsSubmits.onclick = () => tasklistSubmitsPanel(taskId);
-
-                taskActions.appendChild(taskActionsEdit);
-                taskActions.appendChild(taskActionsDelete);
-                taskActions.appendChild(taskActionsSubmits);
-                taskContainer.appendChild(taskActions);
+                document.querySelector('#groupinfo-actions').classList.remove('hidden');
+                document.querySelector('#boardman-actions__edit-btn').disabled = false;
+                document.querySelector('#boardman-actions__delete-btn').disabled = false;
             }
-
-            category.querySelector('.taskcat-content').appendChild(taskContainer);
         })
         .catch(error => console.error(error));
     })
-    .catch(error => console.error(error));
+}
+
+function createTasklistTask(taskData, submitData) {
+    const token = getToken();
+    //console.log(taskData, submitData);
+    
+    // Сперва определяем категорию задачи, исходя из
+    // статуса посылки в submitData (если есть)...
+    let categoryId = 'unknown', categoryName = '⁉️ Неизвестно';
+    if (!submitData.status || submitData.status === undefined) {
+        categoryId = 'to-do';
+        categoryName = '⚒️ К выполнению';
+    }
+    else {
+        if (submitData.status === 'pending') {
+            categoryId = 'pending';
+            categoryName = '🐝 На рассмотрении…';
+        }
+        else if (submitData.status === 'accepted') {
+            categoryId = 'accepted';
+            categoryName = '🏆 ПРИНЯТО!';
+        }
+        else if (submitData.status === 'rejected') {
+            categoryId = 'rejected';
+            categoryName = '🗿 Отклонено';
+        }
+    }
+
+    // Затем создаем задачу в соответствующей категории,
+    // элемент за элементов (ну а **ли, на чистом JSе же пишем)...
+    let category = document.querySelector(`#taskcat-${categoryId}`);
+    if (!category) {
+        createCategory(categoryId, categoryName);
+        category = document.querySelector(`#taskcat-${categoryId}`);
+    }
+
+    const taskContainer = document.createElement('article');
+    taskContainer.className = 'task';
+
+    const taskContent = document.createElement('div');
+    taskContent.className = 'task-content';
+
+    const taskTitle = document.createElement('h3');
+    taskTitle.className = 'task-content__title text-clip';
+    taskTitle.innerText = taskData.title;
+    taskContent.appendChild(taskTitle);
+
+    const taskText = document.createElement('p');
+    taskText.className = 'task-content__text text-clip';
+    taskText.innerText = taskData.body;
+    taskContent.appendChild(taskText);
+
+    const taskDue = document.createElement('i');
+    taskDue.className = 'task-content__due';
+
+    if (taskData.date_due !== null) {
+    const taskDueDate = ISOtoDDMMYY(taskData.date_due);
+        taskDue.innerText = `Срок сдачи: ДО ${taskDueDate}`;
+
+        if (checkIfOutdated(taskData.date_due)) {
+            taskDue.classList.add('task-outdated');
+        }
+    }
+    taskContent.appendChild(taskDue);
+
+    taskContent.onclick = () => {
+        taskmanGetInfo(taskData.id, submitData.status);
+        openTaskmanView();
+    }
+
+    taskContainer.appendChild(taskContent);
+
+    // Наконец, если пользователь является оператором,
+    // добавляем специальные кнопки управления задачей.
+    if (showActionsForOperator) {
+        const taskActions = document.createElement('div');
+        taskActions.className = 'task-actions';
+
+        const taskActionsEdit = document.createElement('button');
+        taskActionsEdit.className = 'task-actions__edit';
+        taskActionsEdit.innerText = 'Изменить';
+        taskActionsEdit.onclick = () => tasklistEditTask(taskData.id);
+
+        const taskActionsDelete = document.createElement('button');
+        taskActionsDelete.className = 'task-actions__delete';
+        taskActionsDelete.innerText = 'Удалить';
+        taskActionsDelete.onclick = () => tasklistDeleteTask(taskData.id);
+
+        const taskActionsSubmits = document.createElement('button');
+        taskActionsSubmits.className = 'task-actions__submits';
+        taskActionsSubmits.innerText = 'Посылки';
+        taskActionsSubmits.onclick = () => tasklistSubmitsPanel(taskData.id);
+
+        taskActions.appendChild(taskActionsEdit);
+        taskActions.appendChild(taskActionsDelete);
+        taskActions.appendChild(taskActionsSubmits);
+        taskContainer.appendChild(taskActions);
+    }
+
+    category.querySelector('.taskcat-content').appendChild(taskContainer);
 }
 
 
 
-// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
+// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 function tasklistNewTask() {
     const token = getToken();
 

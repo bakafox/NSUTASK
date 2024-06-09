@@ -138,6 +138,6 @@ aside {
     background: var(--rejected);
 }
 
-.taskman-actions__submit-body {
+#taskman-actions__submit-body {
     resize: vertical;
 }

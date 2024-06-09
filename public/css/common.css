@@ -22,7 +22,6 @@ html {
     --rounding-small: 4px;
     --rounding-full: 1000px;
     --blur-backdrop-bg: .44vh;
-    /*--blur-backdrop-bg: 4px;*/
 }
 
 body {
@@ -38,10 +37,10 @@ body {
 
 main {
     width: 100vw; height: 100vh;
-    display: flex; flex-direction: column;
-    background: var(--bg-image-mask);
     backdrop-filter: blur(var(--blur-backdrop-bg));
+    background: var(--bg-image-mask);
     overflow: clip;
+    gap: 0 !important;
 }
 
 
@@ -106,20 +105,27 @@ hr {
 
 
 
+::backdrop {
+    backdrop-filter: blur(calc(var(--blur-backdrop-bg) / 2));
+}
+
 .card {
     display: flex; justify-content: start;
     background: var(--bg-card);
     margin: var(--gap-small); padding: var(--gap-small);
     border-radius: var(--rounding-regular);
     box-shadow: var(--shadow-emphasis-low);
+    outline: none;
+    border: none;
 }
 
 .card-adaptive {
     background: var(--bg-card);
     margin: var(--gap-small) auto; padding: var(--gap-big);
-    
     border-radius: var(--rounding-regular);
     box-shadow: var(--shadow-emphasis-low);
+    outline: none;
+    border: none;
 }
 @media screen and (min-width: 721px) {
     .card-adaptive {
