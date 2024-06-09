@@ -4,7 +4,9 @@ html {
     --gap-small: 6px;
     --gap-tiny: 2px;
 
-    --bg-main: #ffe4cf;
+    --brand-accent: #f64;
+    --brand-main: #ffe4cf;
+    --bg-main: var(--brand-main);
     --bg-image-mask: #4448;
     --bg-card: #fffc;
 
@@ -21,7 +23,10 @@ html {
     --rounding-regular: 8px;
     --rounding-small: 4px;
     --rounding-full: 1000px;
-    --blur-backdrop-bg: 5px;
+    --blur-backdrop-bg: .44vh;
+
+    --transition-slow: .3s;
+    --transition-fast: .2s;
 }
 
 body {
@@ -29,7 +34,7 @@ body {
     box-sizing: border-box;
     font-size: 14px; font-family: sans-serif;
     
-    background: url('https://images.unsplash.com/photo-1563268467-150df292f007??w=1600&h=900&fit=crop') var(--bg-main);
+    background: url('../assets/bg-grass.jpg') var(--bg-main);
     background-size: cover;
     background-position: center center;
     color: var(--text-main);
@@ -37,10 +42,10 @@ body {
 
 main {
     width: 100vw; height: 100vh;
-    display: flex; flex-direction: column;
-    background: var(--bg-image-mask);
     backdrop-filter: blur(var(--blur-backdrop-bg));
+    background: var(--bg-image-mask);
     overflow: clip;
+    gap: 0 !important;
 }
 
 
@@ -105,23 +110,31 @@ hr {
 
 
 
+::backdrop {
+    backdrop-filter: blur(calc(var(--blur-backdrop-bg) / 2));
+}
+
 .card {
     display: flex; justify-content: start;
     background: var(--bg-card);
     margin: var(--gap-small); padding: var(--gap-small);
     border-radius: var(--rounding-regular);
     box-shadow: var(--shadow-emphasis-low);
+    outline: none;
+    border: none;
 }
 
 .card-adaptive {
-    margin: auto; padding: var(--gap-big);
-    width: 480px;
+    background: var(--bg-card);
+    margin: var(--gap-small) auto; padding: var(--gap-big);
+    border-radius: var(--rounding-regular);
+    box-shadow: var(--shadow-emphasis-low);
+    outline: none;
+    border: none;
 }
 @media screen and (min-width: 721px) {
     .card-adaptive {
-        background: var(--bg-card);
+        min-width: 480px;
         margin: var(--gap-big) auto;
-        border-radius: var(--rounding-regular);
-        box-shadow: var(--shadow-emphasis-low);
     }
 }

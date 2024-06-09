@@ -7,6 +7,7 @@ const authDV = require('../authDV');
 
 
 router.get('/board:board_id/task:task_id/submit', authDV.validateUser, submitsController.getSubmitInfo);
+router.get('/board:board_id/submits', authDV.validateUser, submitsController.getBoardSubmits);
 router.post('/board:board_id/task:task_id/submit', authDV.validateUser, submitsController.createSubmit);
 router.delete('/board:board_id/task:task_id/submit', authDV.validateUser, submitsController.deleteSubmit);
 

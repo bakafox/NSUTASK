@@ -14,8 +14,8 @@ function closeTaskmanView() {
 
 
 
-// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
-function taskmanGetInfo(taskId) {
+// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+function taskmanGetInfo(taskId, submitStatus) {
     const token = getToken();
 
     fetch(`../api/board${currentBoard}/task${taskId}`, {
@@ -25,6 +25,7 @@ function taskmanGetInfo(taskId) {
     })
     .then(response => response.json())
     .then(data => {
+        currentTask = taskId;
         const taskInfo = document.querySelector('#taskman-taskinfo');
         const taskSubmits = document.querySelector('#taskman-tasksubmits');
         taskInfo.innerHTML = '';
@@ -43,32 +44,32 @@ function taskmanGetInfo(taskId) {
         const taskDue = document.createElement('i');
         if (data.date_due !== null) {
             const taskDueDate = ISOtoDDMMYY(data.date_due);
-            taskDue.innerText = `Срок сдачи: ДО ${taskDueDate} (НЕ включительно)`;
+            taskDue.innerText = `Срок сдачи: ДО ${taskDueDate} (не включительно)`;
             
+            if (checkIfOutdated(data.date_due)) {
+                taskDue.classList.add('task-outdated');
+            }
         }
         else {
             taskDue.innerText = `Без крайнего срока сдачи.`;
         }
         taskInfo.appendChild(taskDue);
 
-        currentTask = taskId;
+        document.querySelector('#taskman-actions__submit-body').classList.add('hidden');
+        document.querySelector('#taskman-actions__btn-submit').classList.add('hidden');
+        document.querySelector('#taskman-actions__btn-delete').classList.add('hidden');
 
-        fetch(`../api/board${currentBoard}/task${taskId}/submit`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            if (data.message !== undefined) {
-                taskSubmits.innerHTML = '<span class="pale">Вы ещё не отправляли посылку для этой задачи — <br>самое время отправить!</p>';
-        
-                document.querySelector('#taskman-actions__submit-body').classList.remove('hidden');
-                document.querySelector('#taskman-actions__btn-submit').classList.remove('hidden');
-                document.querySelector('#taskman-actions__btn-delete').classList.add('hidden');
-            }
-            else {
+        // Не делаем лишних запросов, если уже известно,
+        // что пользователь не отпарвлял посылку.
+        if (submitStatus !== undefined) {
+            fetch(`../api/board${currentBoard}/task${taskId}/submit`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data);
                 const submitDate = new Date(data.date_submitted);
                 const submitStatus = data.status;
                 const submitText = data.text;
@@ -81,14 +82,13 @@ function taskmanGetInfo(taskId) {
                 submitStatusContainer.className = 'taskman-tasksubmit__status';
 
                 if (submitStatus === 'pending') {
-                    submitStatusContainer.innerText = '🤔 На рассмотрении';
+                    submitStatusContainer.innerText = '🐝 На рассмотрении…';
                     submitStatusContainer.classList.add('taskman-tasksubmit__status-pending');
                     document.querySelector('#taskman-actions__btn-delete').classList.remove('hidden');
                 }
                 else if (submitStatus === 'accepted') {
                     submitStatusContainer.innerText = '🏆 ПРИНЯТО!';
                     submitStatusContainer.classList.add('taskman-tasksubmit__status-accepted');
-                    document.querySelector('#taskman-actions__btn-delete').classList.add('hidden');
                 }
                 else if (submitStatus === 'rejected') {
                     submitStatusContainer.innerText = '🗿 Отклонено';
@@ -96,7 +96,7 @@ function taskmanGetInfo(taskId) {
                     document.querySelector('#taskman-actions__btn-delete').classList.remove('hidden');
                 }
                 else {
-                    submitStatusContainer.innerText = '❓ Неизвестно...';
+                    submitStatusContainer.innerText = '⁉️ Неизвестно';
                     document.querySelector('#taskman-actions__btn-delete').classList.remove('hidden');
                 }
                 taskSubmits.appendChild(submitStatusContainer);
@@ -105,14 +105,15 @@ function taskmanGetInfo(taskId) {
                 submitTextContainer.className = 'taskman__tasksubmit-text';
                 submitTextContainer.innerText = submitText;
                 taskSubmits.appendChild(submitTextContainer);
-
-                document.querySelector('#taskman-actions__submit-body').classList.add('hidden');
-                document.querySelector('#taskman-actions__btn-submit').classList.add('hidden');
-                document.querySelector('#taskman-actions__btn-delete').classList.remove('hidden');
-            }
- 
-        })
-        .catch(error => console.error(error));
+            })
+            .catch(error => console.error(error));
+        }
+        else {
+            taskSubmits.innerHTML = '<span class="pale">Вы ещё не отправляли посылку для этой задачи&nbsp;— <br>самое время отправить!</p>';
+            
+            document.querySelector('#taskman-actions__submit-body').classList.remove('hidden');
+            document.querySelector('#taskman-actions__btn-submit').classList.remove('hidden');
+        }
     })
     .catch(error => console.error(error));
 }
@@ -131,14 +132,13 @@ function taskmanSendSubmit() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message !== undefined) {
-            alert(data.message);
-        }
+        if (data.message !== undefined) { alert(data.message); }
         else {
             alert('Посылка успешно отправлена!');
+            document.querySelector('#taskman-actions__submit-body').value = '';
+            updateTasklist();
+            taskmanGetInfo(currentTask);
         }
-        document.querySelector('#taskman-actions__submit-body').value = '';
-        taskmanGetInfo(currentTask);
     })
     .catch(error => console.error(error));
 }
@@ -154,16 +154,12 @@ function taskmanDeleteSubmit() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message !== undefined) {
-            alert(data.message);
-        }
+        if (data.message !== undefined) { alert(data.message); }
         else {
-            alert('Посылка успешно удалена.');
+            //alert('Посылка успешно удалена.');
+            updateTasklist();
+            taskmanGetInfo(currentTask);
         }
-        taskmanGetInfo(currentTask);
     })
     .catch(error => console.error(error));
 }
-
-
-

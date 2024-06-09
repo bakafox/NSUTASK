@@ -1,0 +1,10 @@
+#logo {
+    max-width: 400px;
+    margin-top: var(--gap-big);
+    transition: calc(var(--transition-slow) * 2);
+}
+#logo:hover {
+    scale: 1.04;
+    filter: brightness(1.4);
+    transition: var(--transition-slow);
+}

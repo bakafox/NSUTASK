@@ -50,13 +50,6 @@ function register() {
     .catch(error => alert(error.message));
 }
 
-function logout() {
-    if (confirm('Вы уверены, что хотите выйти?')) {
-        clearToken();
-        initLayout();
-    }
-}
-
 
 
 function toggleLoginRegister() {

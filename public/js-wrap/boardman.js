@@ -7,41 +7,47 @@ function toggleBoardmanView() {
 
 
 
-// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
-function createBoardmanBoard(boardId) {
+// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+function createBoardmanBoard(data) {
     const token = getToken();
 
-    fetch(`../api/board${boardId}`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const boardContainer = document.createElement('button');
-        boardContainer.className = 'boardman-item';
+    const boardContainerState = document.createElement('input');
+    boardContainerState.className = 'boardman-item-state';
+    boardContainerState.type = 'radio';
+    boardContainerState.name = 'boardman-state';
+    
+    const boardContainer = document.createElement('label');
+    boardContainer.className = 'boardman-item text-clip';
+    boardContainer.innerText = data.name;
+    boardContainer.title = data.description;
 
-        boardContainer.innerText = data.board.name;
-        boardContainer.title = data.board.description;
-        boardContainer.onclick = function() {
-            closeTaskmanView();
+    // Несмотря на скрытие в CSS, JS назначает таргет и для
+    // input, и для label, поэтому если бы здесь был boardContainer,
+    // фукнция по click вызывалась бы ДВАЖДЫ... это JS, детка!
+    boardContainerState.onclick = () => {
+        closeTaskmanView();
+        
+        currentBoard = data.id;
+        setLastBoard(currentBoard);
+        document.querySelector('#groupinfo__title').innerText = data.description;
+        
+        updateTasklist();
+    }
 
-            document.querySelector('.boardman-item.selected')?.classList.remove('selected');
-            this.classList.toggle('selected');
+    // Эта логика нужна при первой инициализации boardman
+    // для корректной обработки currentBoard из getLastBoard().
+    if (data.id === +currentBoard) {
+        boardContainerState.checked = true;
+        document.querySelector('#groupinfo__title').innerText = data.description;
+    }
 
-            currentBoard = data.board.id;
-            document.querySelector('#groupinfo__title').innerText = data.board.description;
-
-            updateTasklist();
-        }
-
-        boardman.appendChild(boardContainer);
-    })
-    .catch(error => console.error(error));
+    boardContainer.appendChild(boardContainerState);
+    boardman.appendChild(boardContainer);
 }
 
 function updateBoardman() {
     const token = getToken();
+    const boardman = document.querySelector('#boardman');
 
     fetch(`../api/boards`, {
         headers: {
@@ -50,12 +56,12 @@ function updateBoardman() {
     })
     .then(response => response.json())
     .then(data => {
-        const boardman = document.querySelector('#boardman');
         boardman.innerHTML = '';
 
+        //console.log(data);
         if (data.length > 0) {
-            for (const boardId of data) {
-                createBoardmanBoard(boardId);
+            for (const boardData of data) {
+                createBoardmanBoard(boardData);
             }
         }
         else {
@@ -67,7 +73,7 @@ function updateBoardman() {
 
 
 
-// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
+// ФУНКЦИИ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 function boardmanNewBoard() {
     const token = getToken();
 
@@ -97,7 +103,6 @@ function boardmanNewBoard() {
     
         else {
             createBoardmanBoard(data.id);
-            currentBoard = data.id;
             updateTasklist();
         }
     })

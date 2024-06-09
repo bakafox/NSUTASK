@@ -9,9 +9,9 @@ html {
     --aside-action-color-selected: var(--text-black-pale);
 
     --gray: #999;
-    --accepted: #0d0;
+    --accepted: #0a0;
     --pending: #fa0;
-    --rejected: #b00;
+    --rejected: #a00;
 }
 
 
@@ -37,10 +37,23 @@ aside {
 #boardman-wrapper {
     left: 0;
     width: 240px;
-    transition: transform .3s;
+    transition: transform var(--transition-slow);
 }
 #boardman-wrapper.closed {
     transform: translateX(-120%);
+}
+.boardman-spacer {
+    width: 240px;
+    flex: 0 0 auto;
+    transition: width var(--transition-slow);
+}
+.boardman-spacer.closed {
+    width: 0;
+}
+@media (max-width: 720px) {
+    .boardman-spacer, #boardman-wrapper {
+        width: 120px;
+    }
 }
 
 #boardman {
@@ -60,11 +73,24 @@ aside {
 .boardman-item:active, aside button:active {
     background: var(--aside-action-bg-active);
 }
-.boardman-item.selected {
+.boardman-item:disabled, aside button:disabled {
+    background: var(--aside-action-bg); color: var(--text-white-pale);
+    cursor: not-allowed;
+}
+
+.boardman-item {
+    text-align: center;
+    align-content: center;
+    padding: 0 var(--gap-small);
+}
+.boardman-item-state {
+    display: none;
+}
+.boardman-item:has(.boardman-item-state:checked) {
     background: var(--aside-action-bg-selected);
     color: var(--text-black-pale);
 }
-.boardman-item.selected::after {
+.boardman-item:has(.boardman-item-state:checked)::after {
     content: '▶';
     position: absolute;
     margin-top: -15px;
@@ -72,44 +98,29 @@ aside {
     color: var(--aside-action-bg-selected);
     font-size: 2rem;
 }
-.boardman-item:disabled, aside button:disabled {
-    background: var(--aside-action-bg); color: var(--text-white-pale);
-    cursor: not-allowed;
-}
-
-.boardman-spacer {
-    width: 240px;
-    flex: 0 0 auto;
-    transition: width .3s;
-}
-.boardman-spacer.closed {
-    width: 0;
-}
-
-@media (max-width: 720px) {
-    .boardman-spacer, #boardman-wrapper {
-        width: 120px;
-    }
-}
 
 
 
 #taskman {
     right: 0;
     width: 480px;
-    transition: transform .3s;
+    transition: transform var(--transition-slow);
 }
 #taskman.closed {
     transform: translateX(120%);
 }
-
 .taskman-spacer {
     width: 480px;
     flex: 0 0 auto;
-    transition: width .3s;
+    transition: width var(--transition-slow);
 }
 .taskman-spacer.closed {
     width: 0;
+}
+@media (max-width: 720px) {
+    .taskman-spacer, #taskman {
+        width: 100%;
+    }
 }
 
 .taskman-tasksubmit__status {
@@ -128,8 +139,6 @@ aside {
     background: var(--rejected);
 }
 
-@media (max-width: 720px) {
-    .taskman-spacer, #taskman {
-        width: 100%;
-    }
+#taskman-actions__submit-body {
+    resize: vertical;
 }

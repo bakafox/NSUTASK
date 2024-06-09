@@ -6,7 +6,7 @@ const DB = require('../databases');
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ПОЛЬЗОВАТЕЛЯ
 router.getBoardTasks = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
@@ -19,11 +19,11 @@ router.getBoardTasks = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.all(
-                `SELECT * FROM tasks`,
+                `SELECT * FROM tasks ORDER BY id DESC`,
                 (err, rows) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
         
-                    return res.status(200).json(rows.map(row => row.id));
+                    return res.status(200).json(rows);
                 }
             );
         }
@@ -57,7 +57,7 @@ router.getTaskInfo = (req, res) => {
 
 
 
-// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРЕВИЛЕГИЙ ОПЕРАТОРА
+// МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 router.createTask = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id;
     const { title, body, dateDue, priority } = req.body;
