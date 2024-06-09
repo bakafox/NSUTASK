@@ -93,7 +93,7 @@ function getBoardData(board_id) {
             CREATE TABLE IF NOT EXISTS task_submits (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 task_id INTEGER NOT NULL,
-                user_id INTEGER UNIQUE NOT NULL,
+                user_id INTEGER NOT NULL,
                 date_submitted TEXT NOT NULL,
                 text TEXT,
                 status TEXT NOT NULL

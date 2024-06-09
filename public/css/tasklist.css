@@ -1,6 +1,5 @@
 html {
     --bg-taskcat: #0004;
-    --bg-taskcat-hover: #0008;
     --bg-task: #fff6;
     --bg-task-hover: #fffa;
 
@@ -21,12 +20,12 @@ html {
 }
 
 #groupinfo {
-    flex: 1 0 auto;
+    min-width: 0; height: 48px;
+    flex: 1 1 0;
     display: flex;
     justify-content: space-between; align-items: center;
-    gap: var(--gap-big);
-    height: 48px;
-    padding-top: 8px;
+    padding-top: var(--gap-medium);
+    gap: var(--gap-medium);
     color: var(--text-white);
 }
 
@@ -35,6 +34,9 @@ html {
     gap: var(--gap-medium);
 }
 
+#groupinfo__title {
+    flex: 1 0 0;
+}
 @media screen and (max-width: 720px) {
     #groupinfo__title {
         display: none;
@@ -96,15 +98,17 @@ html {
     display: flex; flex-direction: column;
     width: 300px;
     box-sizing: border-box;
+    border-radius: var(--rounding-regular);
+    transition: background-color .2s;
 }
 
 .taskcat-wrapper {
-    border: 2px solid var(--bg-taskcat); border-radius: 8px;
+    border: 2px solid var(--bg-taskcat); border-radius: var(--rounding-regular);
     overflow: hidden;
     background-color: var(--bg-taskcat);
 }
-.taskcat:hover .taskcat-wrapper {
-    background-color: var(--bg-taskcat-hover);
+.taskcat:hover {
+    background-color: var(--bg-taskcat);
 }
 
 .taskcat-header {
@@ -149,6 +153,7 @@ html {
     margin-bottom: 2px; padding: var(--gap-medium);
     background-color: var(--bg-task);
     cursor: pointer;
+    transition: background-color .2s;
 }
 .task:hover {
     background-color: var(--bg-task-hover);

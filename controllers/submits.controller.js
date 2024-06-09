@@ -109,7 +109,7 @@ router.createSubmit = (req, res) => {
                                     const status = boardConfigs.submits_autoaccept ? 'accepted' : 'pending';
                                     
                                     dataDb.run(
-                                        `INSERT OR REPLACE INTO task_submits (user_id, task_id, date_submitted, text, status) VALUES (?, ?, ?, ?, ?)`,
+                                        `INSERT INTO task_submits (user_id, task_id, date_submitted, text, status) VALUES (?, ?, ?, ?, ?)`,
                                         [userId, taskId, dateSubmitted, txt, status],
                                         function(err) {
                                             if (err) { return res.status(500).json({ message: err.message }); }

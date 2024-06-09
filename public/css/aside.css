@@ -81,6 +81,7 @@ aside {
 .boardman-item {
     text-align: center;
     align-content: center;
+    padding: 0 var(--gap-small);
 }
 .boardman-item-state {
     display: none;

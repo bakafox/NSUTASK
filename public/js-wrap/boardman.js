@@ -15,13 +15,13 @@ function createBoardmanBoard(data) {
     boardContainerState.className = 'boardman-item-state';
     boardContainerState.type = 'radio';
     boardContainerState.name = 'boardman-state';
-    //boardContainerState.classList.add('hidden');
-
+    
     const boardContainer = document.createElement('label');
     
     boardContainer.className = 'boardman-item';
     boardContainer.innerText = data.name;
     boardContainer.title = data.description;
+    boardContainer.classList.add('text-clip');
 
     // Несмотря на скрытие в CSS, JS назначает таргет и для
     // input, и для label, поэтому если бы здесь был boardContainer,
