@@ -1,0 +1,8 @@
+#logo {
+    max-width: 400px;
+    margin-top: var(--gap-big);
+    transition: .3s;
+}
+#logo:hover {
+    scale: 1.06;
+}

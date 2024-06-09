@@ -30,7 +30,7 @@ body {
     box-sizing: border-box;
     font-size: 14px; font-family: sans-serif;
     
-    background: url('https://images.unsplash.com/photo-1563268467-150df292f007??w=1600&h=900&fit=crop') var(--bg-main);
+    background: url('../assets/bg-grass.jpg') var(--bg-main);
     background-size: cover;
     background-position: center center;
     color: var(--text-main);
@@ -115,14 +115,15 @@ hr {
 }
 
 .card-adaptive {
-    margin: auto; padding: var(--gap-big);
-    width: 480px;
+    background: var(--bg-card);
+    margin: var(--gap-small) auto; padding: var(--gap-big);
+    
+    border-radius: var(--rounding-regular);
+    box-shadow: var(--shadow-emphasis-low);
 }
 @media screen and (min-width: 721px) {
     .card-adaptive {
-        background: var(--bg-card);
+        min-width: 480px;
         margin: var(--gap-big) auto;
-        border-radius: var(--rounding-regular);
-        box-shadow: var(--shadow-emphasis-low);
     }
 }

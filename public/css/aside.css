@@ -42,6 +42,19 @@ aside {
 #boardman-wrapper.closed {
     transform: translateX(-120%);
 }
+.boardman-spacer {
+    width: 240px;
+    flex: 0 0 auto;
+    transition: width .3s;
+}
+.boardman-spacer.closed {
+    width: 0;
+}
+@media (max-width: 720px) {
+    .boardman-spacer, #boardman-wrapper {
+        width: 120px;
+    }
+}
 
 #boardman {
     gap: var(--gap-small);
@@ -85,21 +98,6 @@ aside {
     font-size: 2rem;
 }
 
-.boardman-spacer {
-    width: 240px;
-    flex: 0 0 auto;
-    transition: width .3s;
-}
-.boardman-spacer.closed {
-    width: 0;
-}
-
-@media (max-width: 720px) {
-    .boardman-spacer, #boardman-wrapper {
-        width: 120px;
-    }
-}
-
 
 
 #taskman {
@@ -110,7 +108,6 @@ aside {
 #taskman.closed {
     transform: translateX(120%);
 }
-
 .taskman-spacer {
     width: 480px;
     flex: 0 0 auto;
@@ -118,6 +115,11 @@ aside {
 }
 .taskman-spacer.closed {
     width: 0;
+}
+@media (max-width: 720px) {
+    .taskman-spacer, #taskman {
+        width: 100%;
+    }
 }
 
 .taskman-tasksubmit__status {
@@ -136,8 +138,6 @@ aside {
     background: var(--rejected);
 }
 
-@media (max-width: 720px) {
-    .taskman-spacer, #taskman {
-        width: 100%;
-    }
+.taskman-actions__submit-body {
+    resize: vertical;
 }

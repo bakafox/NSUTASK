@@ -14,10 +14,6 @@ function initLayout() {
     .then(data => {
         // Если пользователь залогинен
         if (data.role !== undefined) {
-            
-            document.querySelector('#login').classList.add('hidden');
-            document.querySelector('#nsutask').classList.remove('hidden');
-            
             // Отображение действий, доступных только оператору,
             // если пользователь является оператором.
             if (data.role === 'operator') {
@@ -29,25 +25,42 @@ function initLayout() {
                 showActionsForOperator = false;
             }
                 
-            // Пробуем перейти в lastBoard, если соответствующая кука существует
+            // Пробуем перейти в lastBoard, если есть соответствующая кука
+            // и такая доска действительно доступна пользователю.
             const lastBoard = getLastBoard();
             if (lastBoard !== null) {
-                currentBoard = lastBoard;
+                fetch(`../api/board${lastBoard}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .catch(() => { lastBoard = null; });
             }
             else {
-                currentBoard = null;
+                lastBoard = null;
             }
+            currentBoard = lastBoard;
 
             closeTaskmanView();
             updateBoardman();
             updateTasklist();
+
+            document.querySelector('#nsutask').classList.remove('hidden');
         }
         // Если пользователь не залогинен
         else {
-            document.querySelector('#login').classList.remove('hidden');
-            document.querySelector('#nsutask').classList.add('hidden');
+            // Перенаправляем его на login.html!
+            window.location.href = '/login.html';
         }
     })
+}
+
+function logout() {
+    if (confirm('Вы уверены, что хотите выйти?')) {
+        clearToken();
+        //clearLastBoard();
+        initLayout();
+    }
 }
 
 
