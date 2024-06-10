@@ -19,7 +19,9 @@ router.getBoardTasks = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.all(
-                `SELECT * FROM tasks ORDER BY id DESC`,
+                `SELECT tasks.*, COUNT(task_submits.id) AS submits_count FROM tasks
+                LEFT JOIN task_submits ON tasks.id = task_submits.task_id
+                GROUP BY tasks.id ORDER BY tasks.id DESC`,
                 (err, rows) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
         
@@ -42,7 +44,9 @@ router.getTaskInfo = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.get(
-                `SELECT * FROM tasks WHERE id = ?`,
+                `SELECT tasks.*, COUNT(task_submits.id) AS submit_count FROM tasks
+                LEFT JOIN task_submits ON tasks.id = task_submits.task_id
+                WHERE tasks.id = ? GROUP BY tasks.id`,
                 [taskId],
                 (err, row) => {
                     if (err) { return res.status(500).json({ message: err.message }); }

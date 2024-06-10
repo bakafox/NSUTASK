@@ -166,7 +166,7 @@ function createTasklistTask(taskData, submitData) {
 
         const taskActionsSubmits = document.createElement('button');
         taskActionsSubmits.className = 'task-actions__submits';
-        taskActionsSubmits.innerText = 'Посылки';
+        taskActionsSubmits.innerText = `Посылок: ${taskData.submits_count}`;
         taskActionsSubmits.onclick = () => tasklistSubmitsPanel(taskData.id);
 
         taskActions.appendChild(taskActionsEdit);

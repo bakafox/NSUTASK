@@ -109,9 +109,9 @@ hr {
 }
 
 
-
 ::backdrop {
     backdrop-filter: blur(calc(var(--blur-backdrop-bg) / 2));
+    transition: var(--transition-slow);
 }
 
 .card {
