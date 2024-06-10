@@ -78,14 +78,16 @@ function boardmanNewBoard() {
     const token = getToken();
 
     const formData = [
+        { name: '<h2>Создание новой доски</h2>', type: 'custom' },
         { name: 'Название доски', type: 'text', allowEmpty: false },
         { name: 'Описание доски (видно сверху)', type: 'text', allowEmpty: true },
+        { name: '<h2>Параметры посылок</h2>', type: 'custom' },
         { name: 'Автоматически принимать отправленные посылки', type: 'checkbox', allowEmpty: true },
         { name: 'Минимальная длина посылки (0 для отключения)', type: 'number', allowEmpty: false },
-        { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', allowEmpty: true }
+        { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', allowEmpty: true },
     ];
 
-    modalmanForm('Создание новой доски', formData)
+    modalmanForm(formData)
     .then(formResults => {
         if (!formResults) { return; }
 
@@ -130,14 +132,16 @@ function boardmanEditBoard() {
     .then(data => {
         //console.log(data);
         const formData = [
+            { name: '<h2>Параметры доски</h2>', type: 'custom' },
             { name: 'Название доски', type: 'text', defaultValue: data.board.name, allowEmpty: false },
             { name: 'Описание доски (видно сверху)', type: 'text', defaultValue: data.board.description, allowEmpty: true },
+            { name: '<h2>Параметры посылок</h2> <i>Изменение параметров не затронет старые посылки.</i>', type: 'custom' },
             { name: 'Автоматически принимать отправленные посылки', type: 'checkbox', defaultValue: data.config.submits_autoaccept, allowEmpty: true },
             { name: 'Минимальная длина посылки (0 для отключения)', type: 'number', defaultValue: data.config.submits_body_size, allowEmpty: false },
-            { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', defaultValue: data.config.submits_strict_due_date, allowEmpty: true }
+            { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', defaultValue: data.config.submits_strict_due_date, allowEmpty: true },
         ];
     
-        modalmanForm('Редактирование доски', formData)
+        modalmanForm(formData)
         .then(formResults => {
             if (!formResults) { return; }
 

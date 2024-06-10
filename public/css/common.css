@@ -114,17 +114,7 @@ hr {
     transition: var(--transition-slow);
 }
 
-.card {
-    display: flex; justify-content: start;
-    background: var(--bg-card);
-    margin: var(--gap-small); padding: var(--gap-small);
-    border-radius: var(--rounding-regular);
-    box-shadow: var(--shadow-emphasis-low);
-    outline: none;
-    border: none;
-}
-
-.card-adaptive {
+.card-adaptive, .card {
     background: var(--bg-card);
     margin: var(--gap-small) auto; padding: var(--gap-big);
     border-radius: var(--rounding-regular);
@@ -137,4 +127,9 @@ hr {
         min-width: 480px;
         margin: var(--gap-big) auto;
     }
+}
+
+.card {
+    display: flex; justify-content: start;
+    margin: var(--gap-small); padding: var(--gap-small);
 }

@@ -185,16 +185,16 @@ function tasklistNewTask() {
     const token = getToken();
 
     const formData = [
+        { name: '<h2>Создание новой задачи</h2>', type: 'custom' },
         { name: 'Заголовок задачи', type: 'text', allowEmpty: false },
-        { name: 'Текст задачи', type: 'text', allowEmpty: true },
-        { name: 'Срок сдачи, НЕ включительно (пропуск — без срока)', type: 'date', allowEmpty: true }
+        { name: 'Текст задачи', type: 'textarea', allowEmpty: true },
+        { name: 'Срок сдачи (НЕ включительно)', type: 'date', allowEmpty: true },
+        { name: '<i>Оставьте пустым, чтобы сделать задачу бессрочной.</i>', type: 'custom' },
     ];
 
-    modalmanForm('Создание новой задачи', formData)
+    modalmanForm(formData)
     .then(formResults => {
         if (!formResults) { return; }
-
-        console.log(formResults);
 
         fetch(`../api/board${currentBoard}/tasks`, {
             method: 'POST',
@@ -230,12 +230,14 @@ function tasklistEditTask(taskId) {
     .then(data => {
         //console.log(data);
         const formData = [
+            { name: '<h2>Изменение задачи</h2>', type: 'custom' },
             { name: 'Заголовок задачи', type: 'text', allowEmpty: false, defaultValue: data.title },
-            { name: 'Текст задачи', type: 'text', allowEmpty: true, defaultValue: data.body },
-            { name: 'Срок сдачи, НЕ включительно (очистка — без срока)', type: 'date', allowEmpty: true, defaultValue: ISOtoDDMMYY(data.date_due) }
+            { name: 'Текст задачи', type: 'textarea', allowEmpty: true, defaultValue: data.body },
+            { name: 'Срок сдачи (НЕ включительно)', type: 'date', allowEmpty: true, defaultValue: data.date_due },
+            { name: '<i>Оставьте пустым, чтобы сделать задачу бессрочной.</i>', type: 'custom' },
         ];
 
-        modalmanForm('Изменение задачи', formData)
+        modalmanForm(formData)
         .then(formResults => {
             if (!formResults) { return; }
 

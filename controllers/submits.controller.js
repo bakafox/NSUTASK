@@ -94,7 +94,7 @@ router.createSubmit = (req, res) => {
         
                             const dateSubmitted = new Date().toISOString();
                             if (boardConfigs.submits_strict_due_date) {
-                                if (new Date(row.due_date) < new Date(dateSubmitted)) {
+                                if (new Date(row.date_due) < new Date(dateSubmitted)) {
                                     return res.status(400).json({ message: 'Для этой задачи посылки больше не принимаются. Сожалеем.' });
                                 }
                             }
