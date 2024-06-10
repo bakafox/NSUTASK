@@ -184,59 +184,82 @@ function createTasklistTask(taskData, submitData) {
 function tasklistNewTask() {
     const token = getToken();
 
-    const title = prompt('Введите заголовок новой задачи:');
-    const body = prompt('Введите текст новой задачи:');
-    const dateDue = DDMMYYtoISO(prompt('Введите срок сдачи новой задачи (ДД.ММ.ГГ, НЕ включительно; пропуск — без срока):'));
-    //console.log(dateDue);
+    const formData = [
+        { name: 'Заголовок задачи', type: 'text', allowEmpty: false },
+        { name: 'Текст задачи', type: 'text', allowEmpty: true },
+        { name: 'Срок сдачи, НЕ включительно (пропуск — без срока)', type: 'date', allowEmpty: true }
+    ];
 
-    fetch(`../api/board${currentBoard}/tasks`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-			title: title,
-			body: body,
-			dateDue: dateDue
+    modalmanForm('Создание новой задачи', formData)
+    .then(formResults => {
+        if (!formResults) { return; }
+
+        console.log(formResults);
+
+        fetch(`../api/board${currentBoard}/tasks`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                title: formResults[0],
+                body: formResults[1],
+                dateDue: formResults[2] || null
+            })
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message !== undefined) { alert(data.message); }
+        .then(response => response.json())
+        .then(data => {
+            if (data.message !== undefined) { alert(data.message); }
 
-        updateTasklist();
-    })
-    .catch(error => console.error(error));
+            updateTasklist();
+        })
+        .catch(error => console.error(error));
+    });
 }
 
 function tasklistEditTask(taskId) {
     const token = getToken();
 
-    const title = prompt('Введите новой заголовок задачи:');
-    const body = prompt('Введите новой текст задачи:');
-    const dateDue = DDMMYYtoISO(prompt('Введите новый срок сдачи задачи (ДД.ММ.ГГ, НЕ включительно; пропуск — без срока):'));
-    //console.log(dateDue);
-
     fetch(`../api/board${currentBoard}/task${taskId}`, {
-        method: 'PUT',
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-			title: title,
-			body: body,
-			dateDue: dateDue
-        })
+        }
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message !== undefined) { alert(data.message); }
+        //console.log(data);
+        const formData = [
+            { name: 'Заголовок задачи', type: 'text', allowEmpty: false, defaultValue: data.title },
+            { name: 'Текст задачи', type: 'text', allowEmpty: true, defaultValue: data.body },
+            { name: 'Срок сдачи, НЕ включительно (очистка — без срока)', type: 'date', allowEmpty: true, defaultValue: ISOtoDDMMYY(data.date_due) }
+        ];
 
-        updateTasklist();
-    })
-    .catch(error => console.error(error));
+        modalmanForm('Изменение задачи', formData)
+        .then(formResults => {
+            if (!formResults) { return; }
+
+            fetch(`../api/board${currentBoard}/task${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title: formResults[0],
+                    body: formResults[1],
+                    dateDue: formResults[2] || null
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message !== undefined) { alert(data.message); }
+
+                updateTasklist();
+            })
+            .catch(error => console.error(error));
+        });
+    });
 }
 
 function tasklistDeleteTask(taskId) {

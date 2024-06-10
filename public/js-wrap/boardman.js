@@ -77,95 +77,98 @@ function updateBoardman() {
 function boardmanNewBoard() {
     const token = getToken();
 
-    const name = prompt("Введите имя новой доски:");
-    const description = prompt("Введите описание новой доски:");
-    const configSubmitsAutoaccept = confirm("Включить автоматическое принятие посылок?");
-    const configSubmitsBodySize = prompt("Введиье минимальную длину текста посылки (0 для отключения):");
-    const configSubmitsStrictDueDate = confirm("Включить запрет сдачи посылок после истечения даты?");
+    const formData = [
+        { name: 'Название доски', type: 'text', allowEmpty: false },
+        { name: 'Описание доски (видно сверху)', type: 'text', allowEmpty: true },
+        { name: 'Автоматически принимать отправленные посылки', type: 'checkbox', allowEmpty: true },
+        { name: 'Минимальная длина посылки (0 для отключения)', type: 'number', allowEmpty: false },
+        { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', allowEmpty: true }
+    ];
 
-    fetch(`../api/boards`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            name: name,
-            description: description,
-            configSubmitsAutoaccept: configSubmitsAutoaccept,
-            configSubmitsBodySize: configSubmitsBodySize,
-            configSubmitsStrictDueDate: configSubmitsStrictDueDate
+    modalmanForm('Создание новой доски', formData)
+    .then(formResults => {
+        if (!formResults) { return; }
+
+        fetch(`../api/boards`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                name: formResults[0],
+                description: formResults[1],
+                configSubmitsAutoaccept: formResults[2],
+                configSubmitsBodySize: formResults[3],
+                configSubmitsStrictDueDate: formResults[4]
+            })
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) { alert(data.message); }
-    
-        else {
-            createBoardmanBoard(data.id);
-            updateTasklist();
-        }
-    })
-    .catch(error => console.error(error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) { alert(data.message); }
+        
+            else {
+                currentBoard = data.id;
+                updateBoardman();
+                updateTasklist();
+            }
+        })
+        .catch(error => console.error(error));
+    });
 }
+
 
 function boardmanEditBoard() {
     const token = getToken();
 
-    const name = prompt("Введите новое имя доски:");
-    const description = prompt("Введите новое описание доски:");
+    fetch(`../api/board${currentBoard}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        //console.log(data);
+        const formData = [
+            { name: 'Название доски', type: 'text', defaultValue: data.board.name, allowEmpty: false },
+            { name: 'Описание доски (видно сверху)', type: 'text', defaultValue: data.board.description, allowEmpty: true },
+            { name: 'Автоматически принимать отправленные посылки', type: 'checkbox', defaultValue: data.config.submits_autoaccept, allowEmpty: true },
+            { name: 'Минимальная длина посылки (0 для отключения)', type: 'number', defaultValue: data.config.submits_body_size, allowEmpty: false },
+            { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', defaultValue: data.config.submits_strict_due_date, allowEmpty: true }
+        ];
+    
+        modalmanForm('Редактирование доски', formData)
+        .then(formResults => {
+            if (!formResults) { return; }
 
-    if (confirm("Желаете изменить настройки доски?")) {
-        const configSubmitsAutoaccept = confirm("Включить автоматическое принятие посылок?");
-        const configSubmitsBodySize = prompt("Введиье минимальную длину текста посылки (0 для отключения):");
-        const configSubmitsStrictDueDate = confirm("Включить запрет сдачи посылок после истечения даты?");
-        
-        fetch(`../api/board${currentBoard}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                name: name,
-                description: description,
-                configSubmitsAutoaccept: configSubmitsAutoaccept,
-                configSubmitsBodySize: configSubmitsBodySize,
-                configSubmitsStrictDueDate: configSubmitsStrictDueDate
+            fetch(`../api/board${currentBoard}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: formResults[0],
+                    description: formResults[1],
+                    configSubmitsAutoaccept: formResults[2],
+                    configSubmitsBodySize: formResults[3],
+                    configSubmitsStrictDueDate: formResults[4]
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) { alert(data.message); }
-
-            else {
-                updateTasklist();
-            }
-        })
-        .catch(error => console.error(error));
-    }
-    else {
-        fetch(`../api/board${currentBoard}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                name: name,
-                description: description,
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) { alert(data.message); }
+            
+                else {
+                    currentBoard = data.id;
+                    updateBoardman();
+                    updateTasklist();
+                }
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) { alert(data.message); }
-
-            else {
-                updateTasklist();
-            }
-        })
-        .catch(error => console.error(error));
-    }
+            .catch(error => console.error(error));
+        });
+    })
+    .catch(error => console.error(error));
 }
 
 function boardmanDeleteBoard() {

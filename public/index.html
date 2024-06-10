@@ -18,6 +18,7 @@
     <script src="js-wrap/boardman.js"></script>
     <script src="js-wrap/tasklist.js"></script>
     <script src="js-wrap/taskman.js"></script>
+    <script src="js-wrap/modalman.js"></script>
 
     <script src="js-utils/init-index.js" defer></script>
 </head>
@@ -78,8 +79,13 @@
     </aside>
 </main>
 
-<dialog class="card-adaptive" id="test">
-    adasdasd
+<dialog id="modalman" class="card-adaptive">
+    <h2 id="modalman__title">Инициализация модальной формы…</h2>
+    <div id="modalman__content" class="flex-fullcol"></div>
+    <div class="flex-fullrow">
+        <button id="modalman__send">Отправить</button>
+        <button id="modalman__cancel">Закрыть</button>
+    </div>
 </dialog>
 
 </body>
