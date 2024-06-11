@@ -31,11 +31,8 @@ html {
 body {
     margin: 0; padding: 0;
     box-sizing: border-box;
-    
-    background: var(--bg-main);
-    background-size: cover;
-    background-position: center center;
-    color: var(--text-main);
+    background: var(--bg-main); color: var(--text-main);
+    background-size: cover; background-position: center center;
 }
 
 main {

@@ -39,13 +39,13 @@ router.getBoardInfo = (req, res) => {
                 [boardId],
                 (err, row) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
-        
+
                     boardsDb.get(
                         `SELECT * FROM board_configs WHERE board_id = ?`,
                         [boardId],
                         (err, row2) => {
                             if (err) { return res.status(500).json({ message: err.message }); }
-        
+
                             return res.status(200).json({ board: row, config: row2 });
                         }
                     )
@@ -126,14 +126,14 @@ router.editBoardInfo = (req, res) => {
                 function (err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (this.changes === 0) { return res.status(404).json({ message: 'Такой доски не существует.' }); }
-        
+
                     boardsDb.run(
                         `UPDATE board_configs SET submits_autoaccept = ?, submits_body_size = ?, submits_strict_due_date = ? WHERE board_id = ?`,
                         [configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate, boardId],
                         function (err) {
                             if (err) { return res.status(500).json({ message: err.message }); }
                             if (this.changes === 0) { return res.status(404).json({ message: 'Такой доски не существует.' }); }
-        
+
                             return res.status(200).json({ id: boardId });
                         }
                     )
@@ -171,19 +171,19 @@ router.deleteBoard = (req, res) => {
                 function(err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (this.changes === 0) { return res.status(404).json({ message: 'Такой доски не существует.' }); }
-    
+
                     boardsDb.run(
                         `DELETE FROM board_configs WHERE board_id = ?`,
                         [boardId],
                         (err) => {
                             if (err) { return res.status(500).json({ message: err.message }); }
-    
+
                             boardsDb.run(
                                 `DELETE FROM board_members WHERE board_id = ?`,
                                 [boardId],
                                 (err) => {
                                     if (err) { return res.status(500).json({ message: err.message }); }
-    
+
                                     boardsDb.close();
                                     try {
                                         fs.rmSync('./data/boards/' + (boardId || 'DONOTDELROOT'), { recursive: true, force: true });
@@ -191,7 +191,7 @@ router.deleteBoard = (req, res) => {
                                     catch (err) {
                                         console.error(`[XXX] Не удалось удалить директорию доски ${boardId}!`);
                                     }
-    
+
                                     return res.status(201).json({ id: boardId });
                                 }
                             );

@@ -1,8 +1,8 @@
 html {
-    --bg-card: #fffc;
+    --bg-card: #eeec;
     --bg-card-emphasis: #2222;
 
-    --card-action-bg: #fffb;
+    --card-action-bg: #fffc;
     --card-action-bg-hover: #fff;
     --card-action-bg-active: #eee;
     --card-action-bg-selected: #ddd;
@@ -12,8 +12,8 @@ html {
     --card-input-bg: #fff;
     --card-input-color: var(--text-black);
     --card-input-border: 2px solid #aaa;
-    --card-input-border-hover: 2px solid #999;
-    --card-input-border-selected: 2px solid #888;
+    --card-input-border-hover: 2px solid #888;
+    --card-input-border-selected: 2px solid #666;
 }
 
 
@@ -82,9 +82,28 @@ html {
     border: var(--card-input-border-selected);
 }
 
-.card input[type="checkbox"], .card-adaptive input[type="checkbox"], dialog input[type="checkbox"],
-.card input[type="radio"], .card-adaptive input[type="radio"], dialog input[type="radio"] {
+.card input[type="checkbox"], .card-adaptive input[type="checkbox"], dialog input[type="checkbox"] {
     margin-right: var(--gap-small);
+}
+
+.card input[type="radio"], .card-adaptive input[type="radio"], dialog input[type="radio"] {
+    margin: 0 var(--gap-medium) 0 var(--gap-small);
+}
+.card label:has(input[type="radio"]), .card-adaptive label:has(input[type="radio"]), dialog label:has(input[type="radio"]) {
+    margin: -5px 0; padding: var(--gap-small);
+    background: var(--card-action-bg);
+    border: 2px solid var(--card-action-bg);
+}
+.card label:has(input[type="radio"]):hover, .card-adaptive label:has(input[type="radio"]):hover, dialog label:has(input[type="radio"]):hover {
+    background: var(--card-action-bg-hover);
+}
+.card label:has(input[type="radio"]):first-of-type, .card-adaptive label:has(input[type="radio"]):first-of-type, dialog label:has(input[type="radio"]):first-of-type {
+    border-top-left-radius: var(--rounding-regular);
+    border-top-right-radius: var(--rounding-regular);
+}
+.card label:has(input[type="radio"]):last-of-type, .card-adaptive label:has(input[type="radio"]):last-of-type, dialog label:has(input[type="radio"]):last-of-type {
+    border-bottom-left-radius: var(--rounding-regular);
+    border-bottom-right-radius: var(--rounding-regular);
 }
 
 .card button, .card-adaptive button, dialog button,
@@ -100,4 +119,10 @@ html {
 .card button:active, .card-adaptive button:active, dialog button:active,
 .card input[type="submit"]:active, .card-adaptive input[type="submit"]:active, dialog input[type="submit"]:active {
     background: var(--card-action-bg-active); color: var(--card-action-color-selected);
+}
+
+.card p, .card-adaptive p, dialog p {
+    margin: -5px 0; padding: var(--gap-small);
+    background: var(--bg-card-emphasis);
+    border-radius: var(--rounding-regular);
 }

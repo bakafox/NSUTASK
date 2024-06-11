@@ -45,7 +45,7 @@ function taskmanGetInfo(taskId, submitStatus) {
         if (data.date_due !== null) {
             const taskDueDate = ISOtoDDMMYY(data.date_due);
             taskDue.innerText = `Срок сдачи: ДО ${taskDueDate} (не включительно)`;
-            
+
             if (checkIfOutdated(data.date_due)) {
                 taskDue.classList.add('task-outdated');
             }
@@ -110,7 +110,7 @@ function taskmanGetInfo(taskId, submitStatus) {
         }
         else {
             taskSubmits.innerHTML = '<span class="pale">Вы ещё не отправляли посылку для этой задачи&nbsp;— <br>самое время отправить!</p>';
-            
+
             document.querySelector('#taskman-actions__submit-body').classList.remove('hidden');
             document.querySelector('#taskman-actions__btn-submit').classList.remove('hidden');
         }
@@ -133,7 +133,7 @@ function taskmanSendSubmit() {
     .then(response => response.json())
     .then(data => {
         if (data.message !== undefined) { alert(data.message); }
-    
+
         else {
             alert('Посылка успешно отправлена!');
             document.querySelector('#taskman-actions__submit-body').value = '';

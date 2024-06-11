@@ -40,13 +40,13 @@
             </label>
 
             <input type="submit" onclick="event.preventDefault(); login()" value="Войти">
-            <a href="#" onclick="toggleLoginRegister()">У меня нет учётной записи</a>
+            <a href="#" class="flex-center" onclick="toggleLoginRegister()">У меня нет учётной записи</a>
         </form>
     </section>
 
     <section id="auth-register" class="card-adaptive flex-fullcol flex-center hidden">
         <h2>Добро пожаловать!</h2>
-        <form name="auth-register" class="flex-fullcol flex-center">
+        <form name="auth-register" class="flex-fullcol">
             <label>
                 <input type="text" id="auth-register_login" name="auth-register_login" placeholder="Логин" required>
             </label>
@@ -57,12 +57,13 @@
                 <input type="password" id="auth-register_password" name="auth-register_password" placeholder="Пароль" required>
             </label>
 
-            <label>[ОТЛАДКА] Оператор?
+            <label style="display: none;">
                 <input type="checkbox" id="auth-register_role" name="newRole">
+                [ОТЛАДКА] Оператор?
             </label>
 
             <input type="submit" onclick="event.preventDefault(); register()" value="Зарегистрироваться">
-            <a href="#" onclick="toggleLoginRegister()">У меня есть учётная запись</a>
+            <a href="#" class="flex-center" onclick="toggleLoginRegister()">У меня есть учётная запись</a>
         </form>
     </section>
 </main>

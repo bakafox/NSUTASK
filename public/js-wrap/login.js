@@ -15,7 +15,7 @@ function login() {
         password.value = '';
 
         if (data.message) { alert(data.message); }
-    
+
         setToken(data.session_token);
         initLayout(data.session_token, data.role);
     })

@@ -84,36 +84,36 @@ router.createSubmit = (req, res) => {
                         || (txt.length < boardConfigs.submits_body_size)) {
                         return res.status(400).json({ message: 'Посылка для этой задачи должна содержать не менее ' + boardConfigs.submits_body_size + ' символов.' });
                     }
-        
+
                     dataDb.get(
                         `SELECT * FROM tasks WHERE id = ?`,
                         [taskId],
                         (err, row) => {
                             if (err) { return res.status(500).json({ message: err.message }); }
                             if (!row) { return res.status(404).json({ message: 'Такой задачи не существует.' }); }
-        
+
                             const dateSubmitted = new Date().toISOString();
                             if (boardConfigs.submits_strict_due_date) {
                                 if (new Date(row.date_due) < new Date(dateSubmitted)) {
                                     return res.status(400).json({ message: 'Для этой задачи посылки больше не принимаются. Сожалеем.' });
                                 }
                             }
-        
+
                             dataDb.get(
                                 `SELECT * FROM task_submits WHERE user_id = ? AND task_id = ?`,
                                 [userId],
                                 (err, row) => {
                                     if (err) { return res.status(500).json({ message: err.message }); }
                                     if (row) { return res.status(409).json({ message: 'Вы уже отправляли посылку для этой задачи. Пожалуйста, сперва удалите предыдущую.' }); }
-        
+
                                     const status = boardConfigs.submits_autoaccept ? 'accepted' : 'pending';
-                                    
+
                                     dataDb.run(
                                         `INSERT INTO task_submits (user_id, task_id, date_submitted, text, status) VALUES (?, ?, ?, ?, ?)`,
                                         [userId, taskId, dateSubmitted, txt, status],
                                         function(err) {
                                             if (err) { return res.status(500).json({ message: err.message }); }
-        
+
                                             return res.status(201).json({ id: userId });
                                         }
                                     );
@@ -137,7 +137,7 @@ router.deleteSubmit = (req, res) => {
         (err, row) => {
             if (err) { return res.status(500).json({ message: err.message }); }
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
-            
+
             dataDb.get(
                 `SELECT status FROM task_submits WHERE user_id = ? AND task_id = ?`,
                 [userId, taskId],
@@ -156,7 +156,7 @@ router.deleteSubmit = (req, res) => {
                             function(err) {
                                 if (err) { return res.status(500).json({ message: err.message }); }
                                 if (this.changes === 0) { return res.status(404).json({ message: 'Вы ещё не отправляли посылку для этой задачи.' }); }
-            
+
                                 return res.status(200).json({ id: userId });
                             }
                         );
@@ -258,13 +258,13 @@ router.setSubmitStatus = (req, res) => {
                 (err, row) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (!row) { return res.status(404).json({ message: 'Такой посылки не существует, либо не существует такой задачи.' }); }
-    
+
                     dataDb.run(
                         `UPDATE task_submits SET status = ? WHERE id = ? AND task_id = ?`,
                         [status, submitId, taskId],
                         function(err) {
                             if (err) { return res.status(500).json({ message: err.message }); }
-    
+
                             return res.status(200).json({ id: submitId });
                         }
                     );

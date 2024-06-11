@@ -234,8 +234,7 @@ function boardmanBoardMembers() {
             });
 
             const formData = [
-                { name: '<h2>Управление участниками</h2>', type: 'custom' },
-                { name: '<i>Выберите участника для УДАЛЕНИЯ, либо добавьте нового.</i>', type: 'custom' },
+                { name: '<h2>Управление участниками</h2> <i>Выберите участника для УДАЛЕНИЯ, либо добавьте нового.</i>', type: 'custom' },
                 ...usersInfo.map(user => ({
                     name: `${user.displayName} (${user.username})`,
                     type: 'radio',
@@ -247,7 +246,7 @@ function boardmanBoardMembers() {
 
             modalmanForm(formData).then(formResults => {
                 if (!formResults) { return };
-                
+
                 const selectedIndex = formResults.findIndex(value => value === true);
                 if (selectedIndex === -1) { return };
 
@@ -256,7 +255,7 @@ function boardmanBoardMembers() {
                 if (selectedUserId === 'new') {
                     const searchQuery = prompt('Введите имя или логин пользователя для поиска:');
                     if (!searchQuery) { return };
-                
+
                     fetch(`../api/users/find?q=${encodeURIComponent(searchQuery)}`, {
                         method: 'GET',
                         headers: {
@@ -269,7 +268,7 @@ function boardmanBoardMembers() {
                             alert('По вашему запросу не найдено ни одного участника.');
                             boardmanBoardMembers();
                         }
-                
+
                         const usersInfo = data.map(user => ({
                             id: user.id,
                             displayName: user.display_name,
@@ -277,8 +276,7 @@ function boardmanBoardMembers() {
                         }));
 
                         const searchResultsForm = [
-                            { name: '<h2>Добавление нового участника</h2>', type: 'custom' },
-                            { name: `<i>По вашему запросу найдено ${usersInfo.length} участник(ов):</i>`, type: 'custom' },
+                            { name: `<h2>Добавление нового участника</h2> <i>По вашему запросу найдено ${usersInfo.length} участник(ов):</i>`, type: 'custom' },
                             ...usersInfo.map(user => ({
                                 name: `${user.displayName} (${user.username})`,
                                 type: 'radio',
@@ -304,7 +302,7 @@ function boardmanBoardMembers() {
                             .then(response => response.json())
                             .then(data => {
                                 if (data.message) { alert(data.message); }
-                        
+
                                 else { boardmanBoardMembers(); }
                             })
                             .catch(error => console.error(error));
@@ -321,7 +319,7 @@ function boardmanBoardMembers() {
                     .then(response => response.json())
                     .then(data => {
                         if (data.message) { alert(data.message); }
-                        
+
                         else { boardmanBoardMembers(); }
                     })
                     .catch(error => console.error(error));

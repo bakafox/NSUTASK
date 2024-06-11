@@ -10,7 +10,7 @@ const DB = require('../databases');
 router.getBoardTasks = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
-    
+
     boardsDb.get(
         `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
         [boardId, userId],
@@ -24,7 +24,7 @@ router.getBoardTasks = (req, res) => {
                 GROUP BY tasks.id ORDER BY tasks.id DESC`,
                 (err, rows) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
-        
+
                     return res.status(200).json(rows);
                 }
             );
@@ -35,7 +35,7 @@ router.getBoardTasks = (req, res) => {
 router.getTaskInfo = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
-    
+
     boardsDb.get(
         `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
         [boardId, userId],
@@ -51,7 +51,7 @@ router.getTaskInfo = (req, res) => {
                 (err, row) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (!row) { return res.status(404).json({ message: 'Такой задачи не существует.' }); }
-        
+
                     res.status(200).json(row);
                 }
             );
@@ -71,7 +71,7 @@ router.createTask = (req, res) => {
     if (dateDue && isNaN(new Date(dateDue))) {
         return res.status(400).json({ message: 'Некорретный формат даты срока выполнения.' });
     }
-    if (dateDue && (new Date(dateDue) < (new Date(dateCreated) - 2048000000))) {
+    if (dateDue && (new Date(dateDue) < (new Date(dateCreated) - 2048000000))) { // Задачу можно создать со сроком сдачи в этот же день!
         return res.status(400).json({ message: 'Дата срока выполнения не может быть в прошлом.' });
     }
 
@@ -87,7 +87,7 @@ router.createTask = (req, res) => {
                 [title, body, dateDue],
                 function (err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
-        
+
                     const newTaskId = this.lastID;
                     res.status(201).json({ id: newTaskId });
                 }
@@ -105,7 +105,7 @@ router.editTaskInfo = (req, res) => {
     if (dateDue && isNaN(new Date(dateDue))) {
         return res.status(400).json({ message: 'Некорретный формат даты срока выполнения.' });
     }
-    if (dateDue && (new Date(dateDue) < (new Date(dateCreated) - 2048000000))) {
+    if (dateDue && (new Date(dateDue) < (new Date(dateCreated) - 2048000000))) { // Задачу можно создать со сроком сдачи в этот же день!
         return res.status(400).json({ message: 'Дата срока выполнения не может быть в прошлом.' });
     }
 
@@ -122,7 +122,7 @@ router.editTaskInfo = (req, res) => {
                 function(err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (this.changes === 0) { return res.status(404).json({ message: 'Такой задачи не существует.' }); }
-        
+
                     return res.status(200).json({ id: taskId });
                 }
             );
@@ -147,7 +147,7 @@ router.deleteTask = (req, res) => {
                 function (err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (this.changes === 0) { return res.status(404).json({ message: 'Такой задачи не существует.' }); }
-        
+
                     return res.status(200).json({ id: taskId });
                 }
             );

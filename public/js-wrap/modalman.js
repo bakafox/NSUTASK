@@ -37,20 +37,20 @@ function modalmanForm(formData) {
             // что это (почему-то) отдельный независимый
             // html-элемент, а не тип input-а.
             else if (field.type === 'textarea') {
-                const text = document.createElement('span');
-                text.innerText = field.name;
-
                 const input = document.createElement('textarea');
                 input.className = 'modalman__input';
                 input.innerHTML = field.defaultValue || '';
 
+                const text = document.createElement('span');
+                text.innerText = field.name;
+
+                text.appendChild(input);
                 modalmanContent.appendChild(text);
-                modalmanContent.appendChild(input);
             }
             else {
                 const input = createFormElement(field);
                 input.className = 'modalman__input';
-                
+
                 const text = document.createElement('span');
                 text.innerText = field.name;
                 // Маркируем обязательные поля звЕздочкой

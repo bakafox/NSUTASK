@@ -80,7 +80,7 @@ function updateTasklist() {
 function createTasklistTask(taskData, submitData) {
     const token = getToken();
     //console.log(taskData, submitData);
-    
+
     // Сперва определяем категорию задачи, исходя из
     // статуса посылки в submitData (если есть)...
     let categoryId = 'unknown', categoryName = '⁉️ Неизвестно';
@@ -316,7 +316,7 @@ function tasklistSubmitsPanel(taskId) {
                 const selectedSubmitIndex = formResults.findIndex(value => value === true);
                 if (selectedSubmitIndex === -1) { return };
 
-                fetch(`../api/board${currentBoard}/task${taskId}/submit${selectedSubmitIndex+1}`, {
+                fetch(`../api/board${currentBoard}/task${taskId}/submit${data[selectedSubmitIndex]}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
@@ -324,12 +324,11 @@ function tasklistSubmitsPanel(taskId) {
                 })
                 .then(response => response.json())
                 .then(submitData => {
-                    if (submitData.message) { 
+                    if (submitData.message) {
                         alert(submitData.message);
                         return;
                     }
-
-                    console.log(submitData);
+                    //console.log(submitData);
 
                     const statusFormData = [
                         { name: `<h2>Посылка от ${submitData.display_name} (${submitData.username})`, type: 'custom' },
@@ -358,7 +357,7 @@ function tasklistSubmitsPanel(taskId) {
                             newSubmitStatus = 'pending';
                         }
 
-                        fetch(`../api/board${currentBoard}/task${taskId}/submit${selectedSubmitIndex+1}`, {
+                        fetch(`../api/board${currentBoard}/task${taskId}/submit${data[selectedSubmitIndex]}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -370,7 +369,7 @@ function tasklistSubmitsPanel(taskId) {
                         })
                         .then(response => response.json())
                         .then(updateData => {
-                            if (updateData.message) { 
+                            if (updateData.message) {
                                 alert(updateData.message);
                             } else {
                                 tasklistSubmitsPanel(taskId);
