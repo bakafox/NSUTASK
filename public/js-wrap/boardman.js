@@ -111,6 +111,7 @@ function boardmanNewBoard() {
 
             else {
                 currentBoard = data.id;
+                setLastBoard(currentBoard);
                 updateBoardman();
                 updateTasklist();
             }

@@ -31,14 +31,6 @@ function updateTasklist() {
     const token = getToken();
     const tasklist = document.querySelector('#tasklist');
 
-    if (currentBoard === null) {
-        document.querySelector('#tasklist').innerHTML = '<h1 class="tasklist-placeholder">Выберите доску, чтобы начать работу.</h1>';
-        // Спасибо кэшу файрфокса за 30 минут дебага
-        document.querySelector('#boardman-actions__edit-btn').disabled = true;
-        document.querySelector('#boardman-actions__delete-btn').disabled = true;
-        return;
-    }
-
     fetch(`../api/board${currentBoard}/submits`, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -53,6 +45,15 @@ function updateTasklist() {
         })
         .then(response => response.json())
         .then(tasksData => {
+            if (tasksData.message !== undefined) {
+                document.querySelector('#tasklist').innerHTML = '<h1 class="tasklist-placeholder">Выберите доску, чтобы начать работу.</h1>';
+                // Спасибо кэшу файрфокса за 30 минут дебага
+                document.querySelector('#boardman-actions__edit-btn').disabled = true;
+                document.querySelector('#boardman-actions__delete-btn').disabled = true;
+                clearLastBoard();
+                return;
+            }
+
             tasklist.innerHTML = '';
 
             if (tasksData.length > 0) {
