@@ -15,10 +15,9 @@ sudo apt install nodejs npm -y
 git clone git@github.com:NSUTASK/NSUTASK.git
 cd ./NSUTASK
 ```
-2. Установите зависимости, также желательно поставить Nodemon для упрощения отладки:
+2. Установите зависимости:
 ```
 npm i
-npm i nodemon
 ```
 3. Наконец, запустите проект и перейдите на `localhost:<ПОРТ>` для начала работы:
 ```

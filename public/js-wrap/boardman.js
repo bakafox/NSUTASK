@@ -190,7 +190,9 @@ function boardmanDeleteBoard() {
             if (data.message) { alert(data.message); }
 
             else {
-                initLayout();
+                currentBoard = null;
+                updateBoardman();
+                updateTasklist();
             }
         })
         .catch(error => console.error(error));
@@ -208,61 +210,123 @@ function boardmanBoardMembers() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message !== undefined) { alert(data.message); }
-
-        const usersLen = data.length;
+        if (data.message !== undefined) {
+            alert(data.message);
+            return;
+        }
 
         let usersInfo = [];
-        for (let userId of data) {
+        const fetchUserPromises = data.map(userId =>
             fetch(`../api/user${userId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                usersInfo.push([data.username, data.display_name]);
+            }).then(response => response.json())
+        );
 
-                if (usersInfo.length === usersLen) {
-                    const action = prompt('Список участников доски: \n\n' + usersInfo.join('\n') + '\n\nЧто вы зотите сделать? \n"a" — Добавить нового участника; "r" — Удалить участника; (пропуск) — выйти.');
+        Promise.all(fetchUserPromises)
+        .then(users => {
+            users.forEach(user => {
+                usersInfo.push({ id: user.id, username: user.username, displayName: user.display_name });
+            });
 
-                    if (action === 'a') {
-                        const userId = prompt('Введите ID участника:');
-                        fetch(`../api/board${currentBoard}/user${userId}`, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.message) { alert(data.message); }
+            const formData = [
+                { name: '<h2>Управление участниками</h2>', type: 'custom' },
+                { name: '<i>Выберите участника для УДАЛЕНИЯ, либо добавьте нового.</i>', type: 'custom' },
+                ...usersInfo.map(user => ({
+                    name: `${user.displayName} (${user.username})`,
+                    type: 'radio',
+                    allowEmpty: false
+                })),
+                { name: '<i>Удаление участника не затронет отправленные им посылки.</i>', type: 'custom' },
+                { name: '➕ Новый участник', type: 'radio', value: 'new', allowEmpty: false }
+            ];
 
-                            else { alert('Участник успешно добавлен!'); }
-                        })
-                        .catch(error => console.error(error));
-                    }
-                    else if (action === 'r') {
-                        const userId = prompt('Введите ID участника:');
-                        fetch(`../api/board${currentBoard}/user${userId}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.message) { alert(data.message); }
+            modalmanForm(formData).then(formResults => {
+                if (!formResults) { return };
+                
+                const selectedIndex = formResults.findIndex(value => value === true);
+                if (selectedIndex === -1) { return };
 
-                            else { alert('Участник успешно удалён!'); }
-                        })
-                        .catch(error => console.error(error));
-                    }
+                const selectedUserId = (selectedIndex < usersInfo.length) ? usersInfo[selectedIndex].id : 'new';
+
+                if (selectedUserId === 'new') {
+                    const searchQuery = prompt('Введите имя или логин пользователя для поиска:');
+                    if (!searchQuery) { return };
+                
+                    fetch(`../api/users/find?q=${encodeURIComponent(searchQuery)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length === 0) {
+                            alert('По вашему запросу не найдено ни одного участника.');
+                            boardmanBoardMembers();
+                        }
+                
+                        const usersInfo = data.map(user => ({
+                            id: user.id,
+                            displayName: user.display_name,
+                            username: user.username
+                        }));
+
+                        const searchResultsForm = [
+                            { name: '<h2>Добавление нового участника</h2>', type: 'custom' },
+                            { name: `<i>По вашему запросу найдено ${usersInfo.length} участник(ов):</i>`, type: 'custom' },
+                            ...usersInfo.map(user => ({
+                                name: `${user.displayName} (${user.username})`,
+                                type: 'radio',
+                                allowEmpty: false
+                            }))
+                        ];
+
+                        modalmanForm(searchResultsForm).then(searchResults => {
+                            if (!searchResults) { return };
+
+                            const selectedSearchIndex = searchResults.findIndex(value => value === true);
+                            if (selectedSearchIndex === -1) { return };
+
+                            const selectedUserToAdd = usersInfo[selectedSearchIndex];
+                            if (!selectedUserToAdd) { return };
+
+                            fetch(`../api/board${currentBoard}/user${selectedUserToAdd.id}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.message) { alert(data.message); }
+                        
+                                else { boardmanBoardMembers(); }
+                            })
+                            .catch(error => console.error(error));
+                        });
+                    })
+                    .catch(error => console.error(error));
+                } else {
+                    fetch(`../api/board${currentBoard}/user${selectedUserId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) { alert(data.message); }
+                        
+                        else { boardmanBoardMembers(); }
+                    })
+                    .catch(error => console.error(error));
                 }
-            })
-            .catch(error => console.error(error));
-        }
+            });
+        })
+        .catch(error => console.error(error));
     })
     .catch(error => console.error(error));
 }

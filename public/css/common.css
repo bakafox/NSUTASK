@@ -34,7 +34,7 @@ body {
     box-sizing: border-box;
     font-size: 14px; font-family: sans-serif;
     
-    background: url('../assets/bg-grass.jpg') var(--bg-main);
+    background: var(--bg-main);
     background-size: cover;
     background-position: center center;
     color: var(--text-main);

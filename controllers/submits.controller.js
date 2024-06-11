@@ -196,7 +196,7 @@ router.getTaskSubmits = (req, res) => {
 
 router.getTaskSubmit = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id, submitId = req.params.submit_id;
-    const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
+    const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId), usersDb = DB.getUsers();
 
     boardsDb.get(
         `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
@@ -208,11 +208,28 @@ router.getTaskSubmit = (req, res) => {
             dataDb.get(
                 `SELECT * FROM task_submits WHERE id = ? AND task_id = ?`,
                 [submitId, taskId],
-                (err, row) => {
+                (err, submitRow) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
-                    if (!row) { return res.status(404).json({ message: 'Такой посылки не существует, либо не существует такой задачи.' }); }
+                    if (!submitRow) { return res.status(404).json({ message: 'Такой посылки не существует, либо не существует такой задачи.' }); }
 
-                    return res.status(200).json(row);
+                    const submitUserId = submitRow.user_id;
+
+                    usersDb.get(
+                        `SELECT username, display_name FROM users WHERE id = ?`,
+                        [submitUserId],
+                        (err, userRow) => {
+                            if (err) { return res.status(500).json({ message: err.message }); }
+                            if (!userRow) { return res.status(404).json({ message: 'Пользователь не найден.' }); }
+
+                            const response = {
+                                ...submitRow,
+                                username: userRow.username,
+                                display_name: userRow.display_name
+                            };
+
+                            return res.status(200).json(response);
+                        }
+                    );
                 }
             );
         }
@@ -224,8 +241,8 @@ router.setSubmitStatus = (req, res) => {
     const status = req.body.status;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
 
-    if (!['accepted', 'rejected'].includes(status)) {
-        return res.status(400).json({ message: 'Новый статус должен быть либо "accepted", либо "rejected".' });
+    if (!['accepted', 'rejected', 'pending'].includes(status)) {
+        return res.status(400).json({ message: 'Указан некорректный новый статус посылки.' });
     }
 
     boardsDb.get(

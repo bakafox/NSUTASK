@@ -289,59 +289,97 @@ function tasklistSubmitsPanel(taskId) {
     const token = getToken();
 
     fetch(`../api/board${currentBoard}/task${taskId}/submits`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        })
-        .then(response => response.json())
-    
-        .then(data => {
-            if (data.length > 0) {
-                const selectedSubmit = prompt(`Выберите посылку для просмотра: ${data.toString()}`);
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.length > 0) {
+            const formData = [
+                { name: '<h2>Управление посылками задачи</h2>', type: 'custom' },
+                ...data.map(submit => ({
+                    name: `Посылка ${submit}`,
+                    type: 'radio',
+                    allowEmpty: false
+                }))
+            ];
 
-                fetch(`../api/board${currentBoard}/task${taskId}/submit${selectedSubmit}`, {
+            modalmanForm(formData).then(formResults => {
+                if (!formResults) return;
+
+                const selectedSubmitIndex = formResults.findIndex(value => value === true);
+                if (selectedSubmitIndex === -1) { return };
+
+                fetch(`../api/board${currentBoard}/task${taskId}/submit${selectedSubmitIndex+1}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                 })
                 .then(response => response.json())
-                .then(data => {
-                    if (data.message) { alert(data.message); }
+                .then(submitData => {
+                    if (submitData.message) { 
+                        alert(submitData.message);
+                        return;
+                    }
 
-                    let newSubmitStatus = prompt('Статус посылки: ' + data.status
-                    + '\n\nТекст посылки: ' + data.text
-                    + '\n\nДата отправления: ' + ISOtoDDMMYY(data.date_submitted)
-                    + '\n\nПРИНЯТЬ — "a", ОТКЛОНИТЬ — "r", НЕ МЕНЯТЬ — (пропуск):');
+                    console.log(submitData);
 
-                    if (newSubmitStatus !== 'a' && newSubmitStatus !== 'r') { return; }
-                    else if (newSubmitStatus === 'a') { newSubmitStatus = 'accepted'; }
-                    else if (newSubmitStatus === 'r') { newSubmitStatus = 'rejected'; }
+                    const statusFormData = [
+                        { name: `<h2>Посылка от ${submitData.display_name} (${submitData.username})`, type: 'custom' },
+                        { name: `<i>Дата отправления: ${ISOtoDDMMYY(submitData.date_submitted)}</i>`, type: 'custom' },
+                        { name: `<p>${submitData.text}</p>`, type: 'custom' },
+                        { name: '<br><i>Выберите статус посылки:</i>', type: 'custom' },
+                        { name: '🏆 ПРИНЯТО!', type: 'radio', defaultValue: (submitData.status === 'accepted'), allowEmpty: false },
+                        { name: '🗿 Отклонено', type: 'radio', defaultValue: (submitData.status === 'rejected'), allowEmpty: false },
+                        { name: '🐝 На рассмотрении…', type: 'radio', defaultValue: (submitData.status === 'pending'), allowEmpty: false }
+                    ];
 
-                    fetch(`../api/board${currentBoard}/task${taskId}/submit${selectedSubmit}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            status: newSubmitStatus
+                    modalmanForm(statusFormData).then(statusFormResults => {
+                        if (!statusFormResults) { return };
+
+                        const selectedStatusIndex = statusFormResults.findIndex(value => value === true);
+                        if (selectedStatusIndex === -1) { return };
+
+                        let newSubmitStatus = null;
+                        if (selectedStatusIndex === 0) {
+                            newSubmitStatus = 'accepted';
+                        }
+                        else if (selectedStatusIndex === 1) {
+                            newSubmitStatus = 'rejected';
+                        }
+                        else {
+                            newSubmitStatus = 'pending';
+                        }
+
+                        fetch(`../api/board${currentBoard}/task${taskId}/submit${selectedSubmitIndex+1}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                status: newSubmitStatus
+                            })
                         })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.message) { alert(data.message); }
-
-                        alert(`Статус посылки изменён на "${newSubmitStatus}"!`);
-                    })
-                    .catch(error => console.error(error));
+                        .then(response => response.json())
+                        .then(updateData => {
+                            if (updateData.message) { 
+                                alert(updateData.message);
+                            } else {
+                                tasklistSubmitsPanel(taskId);
+                            }
+                        })
+                        .catch(error => console.error(error));
+                    });
                 })
                 .catch(error => console.error(error));
-            }
-            else {
-                alert('Нет посылок для просмотра.');
-            }
-        })
-        .catch(error => alert(error.message));
+            });
+        } else {
+            alert('Нет посылок для просмотра.');
+        }
+    })
+    .catch(error => alert(error.message));
 }

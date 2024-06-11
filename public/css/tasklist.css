@@ -98,7 +98,7 @@ html {
 .taskcat-header {
     display: flex;
     justify-content: space-between;
-    padding: 8px var(--gap-medium) var(--gap-medium);
+    padding: 8px var(--gap-medium);
     color: var(--text-white);
 }
 .taskcat:hover .taskcat-header {
@@ -112,8 +112,8 @@ html {
 }
 
 .taskcat-content {
-    max-height: calc(100% - 42px);
-    overflow: hidden scroll
+    max-height: calc(100% - 32px);
+    overflow: hidden scroll;
 }
 
 .task-content {

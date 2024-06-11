@@ -2,14 +2,14 @@ function createFormElement(field) {
     const input = document.createElement('input');
     input.type = field.type;
 
-    if (field.type === 'checkbox') {
+    if (field.type === 'checkbox' || field.type === 'radio') {
         input.checked = !!field.defaultValue;
     }
     else if (field.type === 'number') {
-        input.value = field.defaultValue ? field.defaultValue : 0;
+        input.value = field.defaultValue || 0;
     }
     else {
-        input.value = field.defaultValue ? field.defaultValue : '';
+        input.value = field.defaultValue || '';
     }
 
     if (!field.allowEmpty) { input.required = true; }
@@ -42,7 +42,7 @@ function modalmanForm(formData) {
 
                 const input = document.createElement('textarea');
                 input.className = 'modalman__input';
-                input.innerHTML = field.defaultValue ? field.defaultValue : '';
+                input.innerHTML = field.defaultValue || '';
 
                 modalmanContent.appendChild(text);
                 modalmanContent.appendChild(input);
@@ -94,7 +94,7 @@ function modalmanForm(formData) {
                 }
 
                 let result = null;
-                if (input.type === 'checkbox') {
+                if (input.type === 'checkbox' || input.type === 'radio') {
                     result = input.checked;
                 }
                 else if (input.type === 'number') {

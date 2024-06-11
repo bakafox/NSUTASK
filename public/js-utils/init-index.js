@@ -27,7 +27,7 @@ function initLayout() {
                 
             // Пробуем перейти в lastBoard, если есть соответствующая кука
             // и такая доска действительно доступна пользователю.
-            const lastBoard = getLastBoard();
+            let lastBoard = getLastBoard();
             if (lastBoard !== null) {
                 fetch(`../api/board${lastBoard}`, {
                     headers: {
@@ -42,17 +42,25 @@ function initLayout() {
             currentBoard = lastBoard;
 
             closeTaskmanView();
+            window.setInterval(updateBoardman, 10000);
+            window.setInterval(updateTasklist, 10000);
             updateBoardman();
             updateTasklist();
 
             document.querySelector('#nsutask').classList.remove('hidden');
+
         }
         // Если пользователь не залогинен
         else {
             // Перенаправляем его на login.html!
             window.location.href = '/login.html';
         }
-    })
+    });
+
+    // Нескучные обои!
+    const wallpapers = ['bg-grass.jpeg', 'bg-leaves.jpeg', 'bg-mesa.jpeg', 'bg-sea.jpeg'];
+    const wallpaperChoice = Math.floor(Math.random() * wallpapers.length);
+    document.querySelector('body').style.backgroundImage = `url('../assets/${wallpapers[wallpaperChoice]}')`;
 }
 
 function logout() {
