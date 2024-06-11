@@ -78,7 +78,7 @@ function modalmanForm(formData) {
         });
         modalman.showModal();
 
-        document.getElementById('modalman__send').onclick = () => {
+        document.getElementById('modalman-actions__send').onclick = () => {
             const results = [];
             let valid = true;
 
@@ -113,7 +113,7 @@ function modalmanForm(formData) {
             }
         };
 
-        document.getElementById('modalman__cancel').onclick = () => {
+        document.getElementById('modalman-actions__cancel').onclick = () => {
             resolve(null);
             modalman.close();
         };
