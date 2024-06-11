@@ -15,7 +15,7 @@ function createBoardmanBoard(data) {
     boardContainerState.className = 'boardman-item-state';
     boardContainerState.type = 'radio';
     boardContainerState.name = 'boardman-state';
-    
+
     const boardContainer = document.createElement('label');
     boardContainer.className = 'boardman-item text-clip';
     boardContainer.innerText = data.name;
@@ -26,11 +26,11 @@ function createBoardmanBoard(data) {
     // фукнция по click вызывалась бы ДВАЖДЫ... это JS, детка!
     boardContainerState.onclick = () => {
         closeTaskmanView();
-        
+
         currentBoard = data.id;
         setLastBoard(currentBoard);
         document.querySelector('#groupinfo__title').innerText = data.description;
-        
+
         updateTasklist();
     }
 
@@ -108,7 +108,7 @@ function boardmanNewBoard() {
         .then(response => response.json())
         .then(data => {
             if (data.message) { alert(data.message); }
-        
+
             else {
                 currentBoard = data.id;
                 updateBoardman();
@@ -140,7 +140,7 @@ function boardmanEditBoard() {
             { name: 'Минимальная длина посылки (0 для отключения)', type: 'number', defaultValue: data.config.submits_body_size, allowEmpty: false },
             { name: 'Запретить сдачу посылок после истечения даты', type: 'checkbox', defaultValue: data.config.submits_strict_due_date, allowEmpty: true },
         ];
-    
+
         modalmanForm(formData)
         .then(formResults => {
             if (!formResults) { return; }
@@ -162,7 +162,7 @@ function boardmanEditBoard() {
             .then(response => response.json())
             .then(data => {
                 if (data.message) { alert(data.message); }
-            
+
                 else {
                     currentBoard = data.id;
                     updateBoardman();
@@ -190,6 +190,7 @@ function boardmanDeleteBoard() {
             if (data.message) { alert(data.message); }
 
             else {
+                clearLastBoard();
                 currentBoard = null;
                 updateBoardman();
                 updateTasklist();

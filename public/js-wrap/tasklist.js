@@ -30,9 +30,12 @@ function createCategory(categoryId, categoryName) {
 function updateTasklist() {
     const token = getToken();
     const tasklist = document.querySelector('#tasklist');
-    
+
     if (currentBoard === null) {
         document.querySelector('#tasklist').innerHTML = '<h1 class="tasklist-placeholder">Выберите доску, чтобы начать работу.</h1>';
+        // Спасибо кэшу файрфокса за 30 минут дебага
+        document.querySelector('#boardman-actions__edit-btn').disabled = true;
+        document.querySelector('#boardman-actions__delete-btn').disabled = true;
         return;
     }
 
@@ -51,7 +54,7 @@ function updateTasklist() {
         .then(response => response.json())
         .then(tasksData => {
             tasklist.innerHTML = '';
-            
+
             if (tasksData.length > 0) {
                 for (const taskData of tasksData) {
                     const submitData = submitsData.filter(submitData => submitData.task_id === taskData.id)[0] || {};

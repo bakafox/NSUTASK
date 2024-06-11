@@ -24,7 +24,7 @@ function initLayout() {
                 document.querySelectorAll('.for-operator').forEach(e => e.style.display = 'none');
                 showActionsForOperator = false;
             }
-                
+
             // Пробуем перейти в lastBoard, если есть соответствующая кука
             // и такая доска действительно доступна пользователю.
             let lastBoard = getLastBoard();
@@ -34,10 +34,14 @@ function initLayout() {
                         'Authorization': `Bearer ${token}`
                     }
                 })
-                .catch(() => { lastBoard = null; });
+                .catch(() => {
+                    lastBoard = null;
+                    clearLastBoard();
+                });
             }
             else {
                 lastBoard = null;
+                clearLastBoard();
             }
             currentBoard = lastBoard;
 
