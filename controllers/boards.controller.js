@@ -62,12 +62,12 @@ router.createBoard = (req, res) => {
     const userId = req.user.id;
     let { name, description, configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate } = req.body;
     const boardsDb = DB.getBoards();
-    
+
     // В SQLite нет оператора BOOLEAN, официальная документация говорит
     // хранить их как INTEGER со значением 0 или 1... легковесненько.
-    if (!configSubmitsAutoaccept) { configSubmitsAutoaccept = 0; }
-    if (!configSubmitsBodySize) { configSubmitsBodySize = 1; }
-    if (!configSubmitsStrictDueDate) { configSubmitsStrictDueDate = 0; }
+    if (configSubmitsAutoaccept === null || configSubmitsAutoaccept === undefined) { configSubmitsAutoaccept = 0; }
+    if (configSubmitsBodySize === null || configSubmitsBodySize === undefined) { configSubmitsBodySize = 1; }
+    if (configSubmitsStrictDueDate === null || configSubmitsStrictDueDate === undefined) { configSubmitsStrictDueDate = 0; }
 
     boardsDb.run(
         `INSERT INTO boards (name, description, user_creator) VALUES (?, ?, ?)`,
@@ -89,7 +89,7 @@ router.createBoard = (req, res) => {
                             if (err) { return res.status(500).json({ message: err.message }); }
 
                             try {
-                                fs.mkdirSync('./data/boards/' + newBoardId, { recursive: true });
+                                fs.mkdirSync('./data/boards/' + (newBoardId || 'DONOTDELROOT'), { recursive: true });
                             }
                             catch (err) {
                                 console.error(`[XXX] Не удалось создать директорию доски ${newBoardId}!`);
@@ -109,9 +109,9 @@ router.editBoardInfo = (req, res) => {
     let { name, description, configSubmitsAutoaccept, configSubmitsBodySize, configSubmitsStrictDueDate } = req.body;
     const boardsDb = DB.getBoards();
 
-    if (!configSubmitsAutoaccept) { configSubmitsAutoaccept = 0; }
-    if (!configSubmitsBodySize) { configSubmitsBodySize = 1; }
-    if (!configSubmitsStrictDueDate) { configSubmitsStrictDueDate = 0; }
+    if (configSubmitsAutoaccept === null || configSubmitsAutoaccept === undefined) { configSubmitsAutoaccept = 0; }
+    if (configSubmitsBodySize === null || configSubmitsBodySize === undefined) { configSubmitsBodySize = 1; }
+    if (configSubmitsStrictDueDate === null || configSubmitsStrictDueDate === undefined) { configSubmitsStrictDueDate = 0; }
 
     boardsDb.get(
         `SELECT * FROM board_members WHERE board_id = ? AND user_id = ?`,
@@ -184,8 +184,9 @@ router.deleteBoard = (req, res) => {
                                 (err) => {
                                     if (err) { return res.status(500).json({ message: err.message }); }
     
+                                    boardsDb.close();
                                     try {
-                                        fs.rmdirSync('./data/boards/' + boardId, { recursive: true });
+                                        fs.rmSync('./data/boards/' + (boardId || 'DONOTDELROOT'), { recursive: true, force: true });
                                     }
                                     catch (err) {
                                         console.error(`[XXX] Не удалось удалить директорию доски ${boardId}!`);

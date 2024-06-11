@@ -19,7 +19,9 @@ router.getBoardTasks = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.all(
-                `SELECT * FROM tasks ORDER BY id DESC`,
+                `SELECT tasks.*, COUNT(task_submits.id) AS submits_count FROM tasks
+                LEFT JOIN task_submits ON tasks.id = task_submits.task_id
+                GROUP BY tasks.id ORDER BY tasks.id DESC`,
                 (err, rows) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
         
@@ -42,7 +44,9 @@ router.getTaskInfo = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.get(
-                `SELECT * FROM tasks WHERE id = ?`,
+                `SELECT tasks.*, COUNT(task_submits.id) AS submit_count FROM tasks
+                LEFT JOIN task_submits ON tasks.id = task_submits.task_id
+                WHERE tasks.id = ? GROUP BY tasks.id`,
                 [taskId],
                 (err, row) => {
                     if (err) { return res.status(500).json({ message: err.message }); }
@@ -60,12 +64,9 @@ router.getTaskInfo = (req, res) => {
 // МЕТОДЫ НИЖЕ ТРЕБУЮТ ПРИВИЛЕГИЙ ОПЕРАТОРА
 router.createTask = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id;
-    const { title, body, dateDue, priority } = req.body;
+    const { title, body, dateDue } = req.body;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
 
-    if (priority && (priority !== 'low' && priority !== 'normal' && priority !== 'high')) {
-        return res.status(400).json({ message: 'Приоритет задачи должен быть "low", "normal" или "high".' });
-    }
     const dateCreated = new Date().toISOString();
     if (dateDue && isNaN(new Date(dateDue))) {
         return res.status(400).json({ message: 'Некорретный формат даты срока выполнения.' });
@@ -82,8 +83,8 @@ router.createTask = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.run(
-                `INSERT INTO tasks (title, body, date_created, date_due, priority) VALUES (?, ?, ?, ?, ?)`,
-                [title, body, dateCreated, dateDue, priority],
+                `INSERT INTO tasks (title, body, date_due) VALUES (?, ?, ?)`,
+                [title, body, dateDue],
                 function (err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
         
@@ -97,12 +98,9 @@ router.createTask = (req, res) => {
 
 router.editTaskInfo = (req, res) => {
     const userId = req.user.id, boardId = req.params.board_id, taskId = req.params.task_id;
-    const { title, body, dateDue, priority } = req.body;
+    const { title, body, dateDue } = req.body;
     const boardsDb = DB.getBoards(), dataDb = DB.getBoardData(boardId);
 
-    if (priority && (priority !== 'low' && priority !== 'normal' && priority !== 'high')) {
-        return res.status(400).json({ message: 'Приоритет задачи должен быть "low", "normal" или "high".' });
-    }
     const dateCreated = new Date().toISOString();
     if (dateDue && isNaN(new Date(dateDue))) {
         return res.status(400).json({ message: 'Некорретный формат даты срока выполнения.' });
@@ -119,8 +117,8 @@ router.editTaskInfo = (req, res) => {
             if (!row) { return res.status(404).json({ message: 'Такой доски не существует, либо вы не являетесь её участником.' }); }
 
             dataDb.run(
-                `UPDATE tasks SET title = ?, body = ?, date_due = ?, priority = ? WHERE id = ?`,
-                [title, body, dateDue, priority, taskId],
+                `UPDATE tasks SET title = ?, body = ?, date_due = ? WHERE id = ?`,
+                [title, body, dateDue, taskId],
                 function(err) {
                     if (err) { return res.status(500).json({ message: err.message }); }
                     if (this.changes === 0) { return res.status(404).json({ message: 'Такой задачи не существует.' }); }

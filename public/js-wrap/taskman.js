@@ -133,6 +133,7 @@ function taskmanSendSubmit() {
     .then(response => response.json())
     .then(data => {
         if (data.message !== undefined) { alert(data.message); }
+    
         else {
             alert('Посылка успешно отправлена!');
             document.querySelector('#taskman-actions__submit-body').value = '';
@@ -146,20 +147,22 @@ function taskmanSendSubmit() {
 function taskmanDeleteSubmit() {
     const token = getToken();
 
-    fetch(`../api/board${currentBoard}/task${currentTask}/submit`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message !== undefined) { alert(data.message); }
-        else {
-            //alert('Посылка успешно удалена.');
-            updateTasklist();
-            taskmanGetInfo(currentTask);
-        }
-    })
-    .catch(error => console.error(error));
+    if (confirm('Вы уверены, что хотите удалить посылку?')) {
+        fetch(`../api/board${currentBoard}/task${currentTask}/submit`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message !== undefined) { alert(data.message); }
+
+            else {
+                updateTasklist();
+                taskmanGetInfo(currentTask);
+            }
+        })
+        .catch(error => console.error(error));
+    }
 }

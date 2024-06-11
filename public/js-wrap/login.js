@@ -19,7 +19,7 @@ function login() {
         setToken(data.session_token);
         initLayout(data.session_token, data.role);
     })
-    .catch(error => alert(error.message));
+    .catch(error => console.error(error.message));
 }
 
 function register() {
@@ -47,7 +47,7 @@ function register() {
     .then(data => {
         if (data.message) { alert(data.message); }
     })
-    .catch(error => alert(error.message));
+    .catch(error => console.error(error.message));
 }
 
 

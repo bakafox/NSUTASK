@@ -85,9 +85,7 @@ function getBoardData(board_id) {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 title TEXT NOT NULL,
                 body TEXT,
-                date_created TEXT NOT NULL,
-                date_due TEXT,
-                priority TEXT DEFAULT 'normal'
+                date_due TEXT
             )
         `);
         db.run(`

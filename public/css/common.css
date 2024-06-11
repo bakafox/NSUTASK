@@ -34,7 +34,7 @@ body {
     box-sizing: border-box;
     font-size: 14px; font-family: sans-serif;
     
-    background: url('../assets/bg-grass.jpg') var(--bg-main);
+    background: var(--bg-main);
     background-size: cover;
     background-position: center center;
     color: var(--text-main);
@@ -109,22 +109,12 @@ hr {
 }
 
 
-
 ::backdrop {
     backdrop-filter: blur(calc(var(--blur-backdrop-bg) / 2));
+    transition: var(--transition-slow);
 }
 
-.card {
-    display: flex; justify-content: start;
-    background: var(--bg-card);
-    margin: var(--gap-small); padding: var(--gap-small);
-    border-radius: var(--rounding-regular);
-    box-shadow: var(--shadow-emphasis-low);
-    outline: none;
-    border: none;
-}
-
-.card-adaptive {
+.card-adaptive, .card {
     background: var(--bg-card);
     margin: var(--gap-small) auto; padding: var(--gap-big);
     border-radius: var(--rounding-regular);
@@ -137,4 +127,9 @@ hr {
         min-width: 480px;
         margin: var(--gap-big) auto;
     }
+}
+
+.card {
+    display: flex; justify-content: start;
+    margin: var(--gap-small); padding: var(--gap-small);
 }
