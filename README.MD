@@ -8,27 +8,36 @@
 
 ## Установка и запуск
 
-0. NSUTASK написан на **Node.JS**, поэтому перед запуском нужно сперва его установить (справедливо):
-```
-sudo apt install nodejs npm -y
-```
+0. Установите Node.JS (нужен для запуска проекта):
+
+    ```
+    sudo apt install nodejs npm -y
+    ```
+
 1. Клонируйте репозиторий и перейдите в него:
-```
-git clone git@github.com:NSUTASK/NSUTASK.git
-cd ./NSUTASK
-```
+
+    ```
+    git clone git@github.com:NSUTASK/NSUTASK.git
+    cd ./NSUTASK
+    ```
+
 2. Установите зависимости:
-```
-npm i
-```
+
+    ```
+    npm i
+    ```
+
 3. Наконец, запустите проект и перейдите на `localhost:<ПОРТ>` для начала работы:
-```
-npm run test # <-- запуск под Nodemon
-# ИЛИ
-npm run serve # <-- запуск под Node
-```
-4. Для удобной отладки API можно использовать [**Insomnia**](https://insomnia.rest/download).
-Файл с конфигурациями лежит в корне этого репозитория (`Insomnia_<ДАТА>.json`), для импорта нужно выбрать *Use the local Scratch Pad*, затем тыкнуть по *Scratch Pad* слева сверху и выбрать *Import*.
+
+    ```
+    npm run test # <-- запуск под Nodemon
+    # ИЛИ
+    npm run serve # <-- запуск под Node
+    ```
+
+4. Для удобной отладки API можно использовать программу [**Insomnia**](https://insomnia.rest/download).
+
+    Файл с конфигурациями для неё лежит в корне этого репозитория (`Insomnia_<ДАТА>.json`). Для импорта конфигурций, в приветственном окне программы нужно выбрать *Use the local Scratch Pad*, затем раскрыть меню *Scratch Pad* (слева сверху) и выбрать *Import*.
 
 
 
@@ -384,7 +393,7 @@ npm run serve # <-- запуск под Node
 ### Submits
 
 <details>
-<summary><big><code>getBoardSubmits</code> (GET <code>../api/board[board_id]/submits</code>)</big></summary>
+<summary><big><code>getBoardSubmits</code> (GET <code>../api/board:board_id/submits</code>)</big></summary>
 
 — получить все посылки пользователя на доске.
 
@@ -400,7 +409,7 @@ npm run serve # <-- запуск под Node
 </details>
 
 <details>
-<summary><big><code>getSubmitInfo</code> (GET <code>../api/board[board_id]/task[task_id]/submit[submit_id]</code>)</big></summary>
+<summary><big><code>getSubmitInfo</code> (GET <code>../api/board:board_id/task:task_id/submit:submit_id</code>)</big></summary>
 
 — получить информацию о посылке.
 
@@ -418,7 +427,7 @@ npm run serve # <-- запуск под Node
 </details>
 
 <details>
-<summary><big><code>createSubmit</code> (POST <code>../api/board[board_id]/task[task_id]/submit</code>)</big></summary>
+<summary><big><code>createSubmit</code> (POST <code>../api/board:board_id/task:task_id/submit</code>)</big></summary>
 
 — создать новую посылку для задачи.
 
@@ -438,7 +447,7 @@ npm run serve # <-- запуск под Node
 </details>
 
 <details>
-<summary><big><code>deleteSubmit</code> (DELETE <code>../api/board[board_id]/task[task_id]/submit</code>)</big></summary>
+<summary><big><code>deleteSubmit</code> (DELETE <code>../api/board:board_id/task:task_id/submit</code>)</big></summary>
 
 — удалить существующую посылку.
 
@@ -456,7 +465,7 @@ npm run serve # <-- запуск под Node
 </details>
 
 <details>
-<summary><big><code>getTaskSubmits</code> (GET <code>../api/board[board_id]/task[task_id]/submits</code>)</big></summary>
+<summary><big><code>getTaskSubmits</code> (GET <code>../api/board:board_id/task:task_id/submits</code>)</big></summary>
 
 — получить все посылки для задачи.
 
@@ -473,7 +482,7 @@ npm run serve # <-- запуск под Node
 </details>
 
 <details>
-<summary><big><code>getTaskSubmit</code> (GET <code>../api/board[board_id]/task[task_id]/submit[submit_id]</code>)</big></summary>
+<summary><big><code>getTaskSubmit</code> (GET <code>../api/board:board_id/task:task_id/submit:submit_id</code>)</big></summary>
 
 — получить информацию о посылке для задачи.
 
@@ -491,7 +500,7 @@ npm run serve # <-- запуск под Node
 </details>
 
 <details>
-<summary><big><code>setSubmitStatus</code> (PUT <code>../api/board[board_id]/task[task_id]/submit[submit_id]</code>)</big></summary>
+<summary><big><code>setSubmitStatus</code> (PUT <code>../api/board:board_id/task:task_id/submit:submit_id</code>)</big></summary>
 
 — изменить статус посылки.
 
