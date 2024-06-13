@@ -101,7 +101,7 @@ function taskmanGetInfo(taskId, submitStatus) {
                 }
                 taskSubmits.appendChild(submitStatusContainer);
 
-                const submitTextContainer = document.createElement('p');
+                const submitTextContainer = document.createElement('pre');
                 submitTextContainer.className = 'taskman__tasksubmit-text';
                 submitTextContainer.innerText = submitText;
                 taskSubmits.appendChild(submitTextContainer);
