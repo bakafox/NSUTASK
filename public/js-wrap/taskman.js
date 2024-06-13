@@ -35,7 +35,7 @@ function taskmanGetInfo(taskId, submitStatus) {
         taskTitle.innerText = data.title;
         taskInfo.appendChild(taskTitle);
 
-        const taskBody = document.createElement('p');
+        const taskBody = document.createElement('pre');
         taskBody.innerText = data.body;
         taskInfo.appendChild(taskBody);
 
