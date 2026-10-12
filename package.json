@@ -22,7 +22,7 @@
   "homepage": "https://github.com/NSUTASK/NSUTASK#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "express": "^5.2.1",
+    "express": "^5.3.0",
     "jsonwebtoken": "^9.0.3",
     "nodemon": "^3.1.14",
     "sqlite3": "^6.0.1"
